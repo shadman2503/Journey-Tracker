@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, BookOpen, Layers } from 'lucide-react';
 import type { SectionGroup } from '@/repositories/interfaces';
 import { TopicCard } from './TopicCard';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ChapterAccordionProps {
   sections: SectionGroup[];
@@ -95,12 +96,15 @@ export const ChapterAccordion: React.FC<ChapterAccordionProps> = ({
                 return (
                   <div
                     key={key}
-                    className="rounded-lg border bg-card/40 transition-colors overflow-hidden"
+                    className="rounded-lg border bg-card/40 transition-colors"
                   >
                     <button
                       type="button"
                       onClick={() => toggleChapter(key)}
-                      className="w-full flex items-center justify-between p-3.5 text-left hover:bg-accent/40 transition-colors"
+                      className={cn(
+                        "w-full flex items-center justify-between p-3.5 text-left hover:bg-accent/40 transition-colors",
+                        isExpanded ? "rounded-t-lg" : "rounded-lg"
+                      )}
                       aria-expanded={isExpanded}
                     >
                       <div className="flex items-center gap-2.5">
