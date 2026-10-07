@@ -1,5 +1,15 @@
 export type SubjectId = 'math' | 'physics' | 'chemistry' | 'english' | 'cse';
 
+export interface SubjectMeta {
+  id: SubjectId;
+  name: string;
+  nameBn?: string;
+  iconName: string;
+  description: string;
+  totalTopics: number;
+  totalChapters: number;
+}
+
 export type TopicStatus =
   | 'not_started'
   | 'learning'
@@ -7,7 +17,7 @@ export type TopicStatus =
   | 'strong'
   | 'needs_revision';
 
-export interface Topic {
+export interface SyllabusTopic {
   id: string;
   subjectId: SubjectId;
   section: string;
@@ -15,6 +25,8 @@ export interface Topic {
   name: string;
   order: number;
 }
+
+export type Topic = SyllabusTopic;
 
 export interface TopicProgress {
   topicId: string;

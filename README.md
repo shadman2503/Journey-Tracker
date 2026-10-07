@@ -21,3 +21,4 @@ A personal web application for tracking and visualizing preparation progress for
 - `npm run preview` - Preview production bundle
 - `npm run test` - Run unit tests with Vitest
 - `npm run typecheck` - Run TypeScript compiler checks
+

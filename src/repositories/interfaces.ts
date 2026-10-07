@@ -5,7 +5,29 @@ import type {
   MockTest,
   Milestone,
   SubjectId,
+  SubjectMeta,
+  SyllabusTopic,
 } from '@/domain/types';
+
+export interface ChapterGroup {
+  chapter: string;
+  section: string;
+  topics: SyllabusTopic[];
+}
+
+export interface SectionGroup {
+  section: string;
+  chapters: ChapterGroup[];
+  totalTopics: number;
+}
+
+export interface ISyllabusRepository {
+  getSubjects(): Promise<SubjectMeta[]>;
+  getSubjectById(id: SubjectId): Promise<SubjectMeta | undefined>;
+  getTopicsBySubject(subjectId: SubjectId): Promise<SyllabusTopic[]>;
+  getSectionsBySubject(subjectId: SubjectId): Promise<SectionGroup[]>;
+  searchTopics(query: string, subjectId?: SubjectId): Promise<SyllabusTopic[]>;
+}
 
 export interface ITopicProgressRepository {
   get(topicId: string): Promise<TopicProgress | undefined>;

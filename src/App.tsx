@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from '@/components/common/Navbar';
 import { DashboardPage } from '@/pages/DashboardPage';
+import { SyllabusPage } from '@/pages/SyllabusPage';
 import { useAppStore } from '@/stores/useAppStore';
 
 export const App: React.FC = () => {
@@ -17,12 +18,13 @@ export const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <div className='min-h-screen flex flex-col bg-background text-foreground'>
         <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-6">
+        <main className='flex-1 container mx-auto px-4 py-6'>
           <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path='/' element={<DashboardPage />} />
+            <Route path='/syllabus' element={<SyllabusPage />} />
+            <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </main>
       </div>
@@ -31,4 +33,3 @@ export const App: React.FC = () => {
 };
 
 export default App;
-
