@@ -4,11 +4,17 @@ import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from './DashboardPage';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
+import { useStudySessionStore } from '@/stores/useStudySessionStore';
 
 vi.mock('@/repositories/dexie', () => ({
   topicProgressRepo: {
     getAll: vi.fn().mockResolvedValue([]),
     save: vi.fn().mockResolvedValue(undefined),
+  },
+  studySessionRepo: {
+    getAll: vi.fn().mockResolvedValue([]),
+    add: vi.fn().mockResolvedValue(1),
+    delete: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -20,6 +26,14 @@ describe('DashboardPage', () => {
       isLoading: false,
     });
     useCountdownStore.getState().resetToDefault();
+    useStudySessionStore.setState({
+      sessions: [],
+      loaded: true,
+      isLoading: false,
+      isRecordModalOpen: false,
+      prefilledSubjectId: undefined,
+      prefilledTopicId: undefined,
+    });
   });
 
   it('renders dashboard title and top metric cards', async () => {
@@ -138,6 +152,60 @@ describe('DashboardPage', () => {
 
     await waitFor(() => {
       expect(screen.queryByText('Configure Target Exam Date')).not.toBeInTheDocument();
+    });
+  });
+
+  it('opens record study session modal when Record Study Session button is clicked', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    const recordBtn = screen.getByRole('button', { name: /Record Study Session/i });
+    expect(recordBtn).toBeInTheDocument();
+    fireEvent.click(recordBtn);
+
+    expect(screen.getByRole('heading', { name: /Record Study Session/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Subject/i)).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    fireEvent.click(cancelBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: /Record Study Session/i })).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders live questions solved and study time from study session store', async () => {
+    useStudySessionStore.setState({
+      sessions: [
+        {
+          id: 1,
+          date: '2026-10-10',
+          subjectId: 'math',
+          topicId: 'math-1',
+          durationMinutes: 90,
+          questionsSolved: 25,
+          correctAnswers: 20,
+          createdAt: '',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('25')).toBeInTheDocument();
+      expect(screen.getByText('1.5 hrs')).toBeInTheDocument();
+      expect(screen.getByText('80% practice accuracy')).toBeInTheDocument();
+      expect(screen.getByText('1 recorded session')).toBeInTheDocument();
     });
   });
 });
