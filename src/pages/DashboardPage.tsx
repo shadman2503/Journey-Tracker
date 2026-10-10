@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Compass, BookCheck, Clock, Plus } from 'lucide-react';
+import { Compass, BookCheck, Clock, Plus, Award } from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
+import { useMockTestStore } from '@/stores/useMockTestStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
 import type { SyllabusTopic } from '@/domain/types';
 import { calculateOverallProgress } from '@/domain/calculations';
@@ -13,6 +14,7 @@ import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid'
 import { StudyStreakCard } from '@/components/dashboard/StudyStreakCard';
 import { ActivityHeatmap } from '@/components/study/ActivityHeatmap';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
+import { RecordMockTestModal } from '@/components/mock/RecordMockTestModal';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
@@ -22,14 +24,17 @@ export const DashboardPage: React.FC = () => {
   const loadSessions = useStudySessionStore((state) => state.loadSessions);
   const sessions = useStudySessionStore((state) => state.sessions);
   const openRecordModal = useStudySessionStore((state) => state.openRecordModal);
+  const loadMockTests = useMockTestStore((state) => state.loadMockTests);
+  const openMockModal = useMockTestStore((state) => state.openRecordModal);
 
   useEffect(() => {
     loadProgress();
     loadSessions();
+    loadMockTests();
     syllabusRepository.getAllTopics().then((data) => {
       setTopics(data);
     });
-  }, [loadProgress, loadSessions]);
+  }, [loadProgress, loadSessions, loadMockTests]);
 
   const overallSummary = useMemo(() => {
     return calculateOverallProgress(topics, progressMap);
@@ -55,13 +60,23 @@ export const DashboardPage: React.FC = () => {
             Turn a huge syllabus into a visible journey. Every completed topic brings you closer.
           </p>
         </div>
-        <Button
-          onClick={() => openRecordModal()}
-          className="self-start sm:self-center gap-1.5 shadow-xs"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Record Study Session</span>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-center">
+          <Button
+            variant="outline"
+            onClick={() => openMockModal()}
+            className="gap-1.5 shadow-xs"
+          >
+            <Award className="h-4 w-4 text-primary" />
+            <span>Record Mock Test</span>
+          </Button>
+          <Button
+            onClick={() => openRecordModal()}
+            className="gap-1.5 shadow-xs"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Record Study Session</span>
+          </Button>
+        </div>
       </div>
 
       {/* Countdown Hero Banner */}
@@ -138,6 +153,9 @@ export const DashboardPage: React.FC = () => {
 
       {/* Record Study Session Modal */}
       <RecordSessionModal />
+
+      {/* Record Mock Test Modal */}
+      <RecordMockTestModal />
     </div>
   );
 };

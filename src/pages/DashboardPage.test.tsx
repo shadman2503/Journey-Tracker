@@ -5,6 +5,7 @@ import { DashboardPage } from './DashboardPage';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
+import { useMockTestStore } from '@/stores/useMockTestStore';
 
 vi.mock('@/repositories/dexie', () => ({
   topicProgressRepo: {
@@ -12,6 +13,11 @@ vi.mock('@/repositories/dexie', () => ({
     save: vi.fn().mockResolvedValue(undefined),
   },
   studySessionRepo: {
+    getAll: vi.fn().mockResolvedValue([]),
+    add: vi.fn().mockResolvedValue(1),
+    delete: vi.fn().mockResolvedValue(undefined),
+  },
+  mockTestRepo: {
     getAll: vi.fn().mockResolvedValue([]),
     add: vi.fn().mockResolvedValue(1),
     delete: vi.fn().mockResolvedValue(undefined),
@@ -33,6 +39,12 @@ describe('DashboardPage', () => {
       isRecordModalOpen: false,
       prefilledSubjectId: undefined,
       prefilledTopicId: undefined,
+    });
+    useMockTestStore.setState({
+      tests: [],
+      loaded: true,
+      isLoading: false,
+      isRecordModalOpen: false,
     });
   });
 
@@ -174,6 +186,28 @@ describe('DashboardPage', () => {
 
     await waitFor(() => {
       expect(screen.queryByRole('heading', { name: /Record Study Session/i })).not.toBeInTheDocument();
+    });
+  });
+
+  it('opens record mock test modal when Record Mock Test button is clicked', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    const recordMockBtn = screen.getByRole('button', { name: /Record Mock Test/i });
+    expect(recordMockBtn).toBeInTheDocument();
+    fireEvent.click(recordMockBtn);
+
+    expect(screen.getByRole('heading', { name: /Record Mock Test/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Test Name \/ Model Test Title/i)).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    fireEvent.click(cancelBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: /Record Mock Test/i })).not.toBeInTheDocument();
     });
   });
 
