@@ -7,6 +7,8 @@ import type {
   TopicStatus,
 } from '@/domain/types';
 import { SUBJECTS_META } from '@/domain/syllabusData';
+import { calculateStreak } from './streak';
+export { calculateStreak };
 
 export const STATUS_WEIGHTS: Record<TopicStatus, number> = {
   strong: 1.0,
@@ -154,54 +156,9 @@ export function calculateStudyStreak(dates: string[]): {
   currentStreak: number;
   bestStreak: number;
 } {
-  if (!dates.length) return { currentStreak: 0, bestStreak: 0 };
-
-  const uniqueSortedDates = Array.from(new Set(dates)).sort();
-  if (uniqueSortedDates.length === 0)
-    return { currentStreak: 0, bestStreak: 0 };
-
-  let bestStreak = 0;
-  let currentRun = 0;
-  let prevDate: Date | null = null;
-
-  for (const dateStr of uniqueSortedDates) {
-    const currentDate = new Date(dateStr);
-    currentDate.setHours(0, 0, 0, 0);
-
-    if (prevDate) {
-      const diffDays = Math.round(
-        (currentDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24),
-      );
-      if (diffDays === 1) {
-        currentRun++;
-      } else if (diffDays > 1) {
-        currentRun = 1;
-      }
-    } else {
-      currentRun = 1;
-    }
-
-    if (currentRun > bestStreak) {
-      bestStreak = currentRun;
-    }
-    prevDate = currentDate;
-  }
-
-  // Calculate current streak relative to today
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const lastActiveDate = new Date(
-    uniqueSortedDates[uniqueSortedDates.length - 1],
-  );
-  lastActiveDate.setHours(0, 0, 0, 0);
-
-  const diffFromToday = Math.round(
-    (today.getTime() - lastActiveDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
-  let currentStreak = 0;
-  if (diffFromToday <= 1) {
-    currentStreak = currentRun;
-  }
-
-  return { currentStreak, bestStreak };
+  const summary = calculateStreak(dates);
+  return {
+    currentStreak: summary.currentStreak,
+    bestStreak: summary.bestStreak,
+  };
 }

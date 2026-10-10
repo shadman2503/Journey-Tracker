@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Compass, Flame, BookCheck, Clock, Plus } from 'lucide-react';
+import { Compass, BookCheck, Clock, Plus } from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
 import type { SyllabusTopic } from '@/domain/types';
 import { calculateOverallProgress } from '@/domain/calculations';
 import { calculateStudyMetrics } from '@/domain/studySession';
+import { calculateStreak } from '@/domain/streak';
 import { CountdownBanner } from '@/components/dashboard/CountdownBanner';
 import { OverallProgressCard } from '@/components/dashboard/OverallProgressCard';
 import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid';
+import { StudyStreakCard } from '@/components/dashboard/StudyStreakCard';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { Button } from '@/components/ui/button';
 
@@ -34,6 +36,10 @@ export const DashboardPage: React.FC = () => {
 
   const studyMetrics = useMemo(() => {
     return calculateStudyMetrics(sessions);
+  }, [sessions]);
+
+  const streakSummary = useMemo(() => {
+    return calculateStreak(sessions.map((s) => s.date));
   }, [sessions]);
 
   return (
@@ -75,16 +81,7 @@ export const DashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="flex items-center justify-between pb-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              Current Streak
-            </span>
-            <Flame className="h-4 w-4 text-orange-500" />
-          </div>
-          <div className="text-2xl font-bold">0 days</div>
-          <p className="text-xs text-muted-foreground mt-1">Consistency is key</p>
-        </div>
+        <StudyStreakCard summary={streakSummary} />
 
         <div className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="flex items-center justify-between pb-2">

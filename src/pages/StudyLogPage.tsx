@@ -9,6 +9,7 @@ import {
   Plus,
   ArrowUpDown,
   BookOpen,
+  Flame,
 } from 'lucide-react';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
@@ -18,6 +19,7 @@ import {
   filterStudySessions,
   type StudySessionSortOption,
 } from '@/domain/studySession';
+import { calculateStreak } from '@/domain/streak';
 import { StudySessionCard } from '@/components/study/StudySessionCard';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { Button } from '@/components/ui/button';
@@ -69,6 +71,11 @@ export const StudyLogPage: React.FC = () => {
     });
   }, [sessions, selectedSubject, searchQuery, topicsMap, sortBy]);
 
+  // Streak summary across recorded sessions
+  const streakSummary = useMemo(() => {
+    return calculateStreak(sessions.map((s) => s.date));
+  }, [sessions]);
+
   // Counts per subject
   const subjectCounts = useMemo(() => {
     const counts: Record<string, number> = { all: sessions.length };
@@ -83,9 +90,25 @@ export const StudyLogPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-            Study Session History
-          </h1>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+              Study Session History
+            </h1>
+            {streakSummary.currentStreak > 0 && (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border',
+                  streakSummary.status === 'active'
+                    ? 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400 border-orange-200 dark:border-orange-800'
+                    : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200 dark:border-amber-800'
+                )}
+                title={streakSummary.message}
+              >
+                <Flame className="h-3 w-3 fill-orange-500 text-orange-500" />
+                <span>{streakSummary.currentStreak}d Streak</span>
+              </span>
+            )}
+          </div>
           <p className="text-muted-foreground text-sm">
             Review your logged practice duration, problems solved, and concept notes
           </p>

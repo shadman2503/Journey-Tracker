@@ -208,5 +208,37 @@ describe('DashboardPage', () => {
       expect(screen.getByText('1 recorded session')).toBeInTheDocument();
     });
   });
+
+  it('renders live study streak status from study session store', async () => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    useStudySessionStore.setState({
+      sessions: [
+        {
+          id: 1,
+          date: todayStr,
+          subjectId: 'math',
+          topicId: 'math-1',
+          durationMinutes: 45,
+          questionsSolved: 10,
+          correctAnswers: 9,
+          createdAt: '',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('1 day')).toBeInTheDocument();
+      expect(screen.getByText('Streak Active')).toBeInTheDocument();
+      expect(screen.getByTestId('study-streak-card')).toBeInTheDocument();
+    });
+  });
 });
 

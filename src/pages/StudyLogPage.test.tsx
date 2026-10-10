@@ -329,4 +329,34 @@ describe('StudyLogPage', () => {
       expect(useStudySessionStore.getState().sessions.length).toBe(0);
     });
   });
+
+  it('renders streak badge in header when active streak exists', async () => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    useStudySessionStore.setState({
+      sessions: [
+        {
+          id: 1,
+          date: todayStr,
+          subjectId: 'math',
+          topicId: 'math-alg-complex',
+          durationMinutes: 45,
+          questionsSolved: 10,
+          correctAnswers: 9,
+          createdAt: '',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <StudyLogPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('1d Streak')).toBeInTheDocument();
+    });
+  });
 });
