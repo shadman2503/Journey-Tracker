@@ -6,8 +6,10 @@ import {
   formatHours,
   calculateStudyMetrics,
   groupSessionsBySubject,
+  sortStudySessions,
+  filterStudySessions,
 } from './studySession';
-import type { StudySession } from './types';
+import type { StudySession, SyllabusTopic } from './types';
 
 describe('createStudySessionSchema', () => {
   const validPayload = {
@@ -231,4 +233,164 @@ describe('groupSessionsBySubject', () => {
     expect(grouped.cse.length).toBe(0);
   });
 });
+
+describe('sortStudySessions', () => {
+  const sessions: StudySession[] = [
+    {
+      id: 1,
+      date: '2026-10-01',
+      subjectId: 'math',
+      topicId: 't1',
+      durationMinutes: 30,
+      questionsSolved: 10,
+      correctAnswers: 5, // 50%
+      createdAt: '',
+    },
+    {
+      id: 2,
+      date: '2026-10-05',
+      subjectId: 'physics',
+      topicId: 't2',
+      durationMinutes: 90,
+      questionsSolved: 25,
+      correctAnswers: 20, // 80%
+      createdAt: '',
+    },
+    {
+      id: 3,
+      date: '2026-10-03',
+      subjectId: 'chemistry',
+      topicId: 't3',
+      durationMinutes: 45,
+      questionsSolved: 30,
+      correctAnswers: 30, // 100%
+      createdAt: '',
+    },
+  ];
+
+  it('sorts by date descending by default', () => {
+    const res = sortStudySessions(sessions, 'date-desc');
+    expect(res.map((s) => s.id)).toEqual([2, 3, 1]);
+  });
+
+  it('sorts by date ascending', () => {
+    const res = sortStudySessions(sessions, 'date-asc');
+    expect(res.map((s) => s.id)).toEqual([1, 3, 2]);
+  });
+
+  it('sorts by duration descending', () => {
+    const res = sortStudySessions(sessions, 'duration-desc');
+    expect(res.map((s) => s.id)).toEqual([2, 3, 1]);
+  });
+
+  it('sorts by questions solved descending', () => {
+    const res = sortStudySessions(sessions, 'questions-desc');
+    expect(res.map((s) => s.id)).toEqual([3, 2, 1]);
+  });
+
+  it('sorts by accuracy descending', () => {
+    const res = sortStudySessions(sessions, 'accuracy-desc');
+    expect(res.map((s) => s.id)).toEqual([3, 2, 1]);
+  });
+});
+
+describe('filterStudySessions', () => {
+  const mockTopics: Record<string, SyllabusTopic> = {
+    'math-alg-complex': {
+      id: 'math-alg-complex',
+      name: 'Complex Numbers',
+      subjectId: 'math',
+      section: 'Algebra',
+      chapter: 'Ch 1',
+      order: 1,
+    },
+    'phys-optics-ref': {
+      id: 'phys-optics-ref',
+      name: 'Refraction of Light',
+      subjectId: 'physics',
+      section: 'Optics',
+      chapter: 'Ch 3',
+      order: 2,
+    },
+  };
+
+  const sessions: StudySession[] = [
+    {
+      id: 1,
+      date: '2026-10-02',
+      subjectId: 'math',
+      topicId: 'math-alg-complex',
+      durationMinutes: 40,
+      questionsSolved: 10,
+      correctAnswers: 8,
+      notes: 'De Moivre theorem practice',
+      createdAt: '',
+    },
+    {
+      id: 2,
+      date: '2026-10-04',
+      subjectId: 'physics',
+      topicId: 'phys-optics-ref',
+      durationMinutes: 60,
+      questionsSolved: 15,
+      correctAnswers: 12,
+      notes: 'Prism derivation',
+      createdAt: '',
+    },
+    {
+      id: 3,
+      date: '2026-10-06',
+      subjectId: 'math',
+      topicId: 'math-alg-complex',
+      durationMinutes: 50,
+      questionsSolved: 20,
+      correctAnswers: 19,
+      notes: 'Euler identity review',
+      createdAt: '',
+    },
+  ];
+
+  it('filters by subject', () => {
+    const res = filterStudySessions(sessions, { subjectId: 'physics' });
+    expect(res.length).toBe(1);
+    expect(res[0].id).toBe(2);
+  });
+
+  it('includes all subjects when subjectId is all or omitted', () => {
+    const res = filterStudySessions(sessions, { subjectId: 'all' });
+    expect(res.length).toBe(3);
+  });
+
+  it('searches across notes text', () => {
+    const res = filterStudySessions(sessions, { searchQuery: 'Euler' });
+    expect(res.length).toBe(1);
+    expect(res[0].id).toBe(3);
+  });
+
+  it('searches across topic names using topicsMap', () => {
+    const res = filterStudySessions(sessions, {
+      searchQuery: 'Refraction',
+      topicsMap: mockTopics,
+    });
+    expect(res.length).toBe(1);
+    expect(res[0].id).toBe(2);
+  });
+
+  it('searches across section and chapter names', () => {
+    const res = filterStudySessions(sessions, {
+      searchQuery: 'Algebra',
+      topicsMap: mockTopics,
+    });
+    expect(res.length).toBe(2);
+  });
+
+  it('returns empty array when search query matches nothing', () => {
+    const res = filterStudySessions(sessions, {
+      searchQuery: 'NonexistentKeywordXYZ',
+      topicsMap: mockTopics,
+    });
+    expect(res.length).toBe(0);
+  });
+});
+
 

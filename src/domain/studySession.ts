@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SubjectId, StudySession } from './types';
+import type { SubjectId, StudySession, SyllabusTopic } from './types';
 
 export const createStudySessionSchema = z
   .object({
@@ -130,4 +130,86 @@ export function groupSessionsBySubject(
 
   return result;
 }
+
+export type StudySessionSortOption =
+  | 'date-desc'
+  | 'date-asc'
+  | 'duration-desc'
+  | 'questions-desc'
+  | 'accuracy-desc';
+
+export interface StudySessionFilterOptions {
+  subjectId?: SubjectId | 'all';
+  searchQuery?: string;
+  topicsMap?: Record<string, SyllabusTopic>;
+  sortBy?: StudySessionSortOption;
+}
+
+/**
+ * Sorts study sessions based on the provided sort option.
+ */
+export function sortStudySessions(
+  sessions: StudySession[],
+  sortBy: StudySessionSortOption = 'date-desc'
+): StudySession[] {
+  const sorted = [...sessions];
+
+  return sorted.sort((a, b) => {
+    switch (sortBy) {
+      case 'date-desc':
+        return new Date(b.date).getTime() - new Date(a.date).getTime() || ((b.id || 0) - (a.id || 0));
+      case 'date-asc':
+        return new Date(a.date).getTime() - new Date(b.date).getTime() || ((a.id || 0) - (b.id || 0));
+      case 'duration-desc':
+        return (b.durationMinutes || 0) - (a.durationMinutes || 0);
+      case 'questions-desc':
+        return (b.questionsSolved || 0) - (a.questionsSolved || 0);
+      case 'accuracy-desc': {
+        const accA = calculateAccuracy(a.correctAnswers, a.questionsSolved);
+        const accB = calculateAccuracy(b.correctAnswers, b.questionsSolved);
+        return accB - accA;
+      }
+      default:
+        return 0;
+    }
+  });
+}
+
+/**
+ * Filters and sorts study sessions by subject, search query, and sort order.
+ */
+export function filterStudySessions(
+  sessions: StudySession[],
+  options: StudySessionFilterOptions
+): StudySession[] {
+  const { subjectId, searchQuery, topicsMap, sortBy = 'date-desc' } = options;
+
+  let filtered = sessions;
+
+  // Filter by subject
+  if (subjectId && subjectId !== 'all') {
+    filtered = filtered.filter((s) => s.subjectId === subjectId);
+  }
+
+  // Filter by search query (topic name, chapter, section, or notes)
+  if (searchQuery && searchQuery.trim()) {
+    const q = searchQuery.trim().toLowerCase();
+    filtered = filtered.filter((s) => {
+      if (s.notes?.toLowerCase().includes(q)) return true;
+      if (s.topicId.toLowerCase().includes(q)) return true;
+
+      if (topicsMap && topicsMap[s.topicId]) {
+        const topic = topicsMap[s.topicId];
+        if (topic.name.toLowerCase().includes(q)) return true;
+        if (topic.chapter.toLowerCase().includes(q)) return true;
+        if (topic.section.toLowerCase().includes(q)) return true;
+      }
+
+      return false;
+    });
+  }
+
+  return sortStudySessions(filtered, sortBy);
+}
+
 

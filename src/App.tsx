@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from '@/components/common/Navbar';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { SyllabusPage } from '@/pages/SyllabusPage';
+import { StudyLogPage } from '@/pages/StudyLogPage';
 import { useAppStore } from '@/stores/useAppStore';
 
 export const App: React.FC = () => {
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
           <Routes>
             <Route path='/' element={<DashboardPage />} />
             <Route path='/syllabus' element={<SyllabusPage />} />
+            <Route path='/study-log' element={<StudyLogPage />} />
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </main>
