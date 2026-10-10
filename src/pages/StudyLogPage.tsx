@@ -21,6 +21,7 @@ import {
 } from '@/domain/studySession';
 import { calculateStreak } from '@/domain/streak';
 import { StudySessionCard } from '@/components/study/StudySessionCard';
+import { ActivityHeatmap } from '@/components/study/ActivityHeatmap';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -183,6 +184,9 @@ export const StudyLogPage: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Activity Heatmap */}
+      <ActivityHeatmap sessions={sessions} />
 
       {/* Filter and Search Bar */}
       <div className="space-y-4">

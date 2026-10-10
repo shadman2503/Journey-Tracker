@@ -123,8 +123,8 @@ describe('StudyLogPage', () => {
     // Summary cards
     expect(screen.getByText('Logged Sessions')).toBeInTheDocument();
     expect(screen.getAllByText('2').length).toBeGreaterThanOrEqual(1); // total session count & filter badge
-    expect(screen.getByText('1.8 hrs')).toBeInTheDocument(); // 105 mins = 1.75 -> 1.8 hrs
-    expect(screen.getByText('30')).toBeInTheDocument(); // 30 questions solved
+    expect(screen.getAllByText('1.8 hrs').length).toBeGreaterThanOrEqual(1); // 105 mins = 1.75 -> 1.8 hrs
+    expect(screen.getAllByText('30').length).toBeGreaterThanOrEqual(1); // 30 questions solved
 
     // Cards rendered with topic titles from topicsMap
     await waitFor(() => {

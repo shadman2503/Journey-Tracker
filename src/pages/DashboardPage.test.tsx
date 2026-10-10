@@ -202,8 +202,8 @@ describe('DashboardPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('25')).toBeInTheDocument();
-      expect(screen.getByText('1.5 hrs')).toBeInTheDocument();
+      expect(screen.getAllByText('25').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('1.5 hrs').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('80% practice accuracy')).toBeInTheDocument();
       expect(screen.getByText('1 recorded session')).toBeInTheDocument();
     });

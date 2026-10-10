@@ -11,6 +11,7 @@ import { CountdownBanner } from '@/components/dashboard/CountdownBanner';
 import { OverallProgressCard } from '@/components/dashboard/OverallProgressCard';
 import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid';
 import { StudyStreakCard } from '@/components/dashboard/StudyStreakCard';
+import { ActivityHeatmap } from '@/components/study/ActivityHeatmap';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { Button } from '@/components/ui/button';
 
@@ -131,6 +132,9 @@ export const DashboardPage: React.FC = () => {
 
         <SubjectProgressGrid subjects={overallSummary.subjects} />
       </div>
+
+      {/* Study Activity & Consistency Heatmap */}
+      <ActivityHeatmap sessions={sessions} />
 
       {/* Record Study Session Modal */}
       <RecordSessionModal />
