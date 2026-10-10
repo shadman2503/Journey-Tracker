@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from './DashboardPage';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
+import { useCountdownStore } from '@/stores/useCountdownStore';
 
 vi.mock('@/repositories/dexie', () => ({
   topicProgressRepo: {
@@ -18,6 +19,7 @@ describe('DashboardPage', () => {
       loaded: true,
       isLoading: false,
     });
+    useCountdownStore.getState().resetToDefault();
   });
 
   it('renders dashboard title and top metric cards', async () => {
@@ -98,4 +100,45 @@ describe('DashboardPage', () => {
       expect(physicsLink).toHaveAttribute('href', '/syllabus?subject=physics');
     });
   });
+
+  it('renders DUET countdown banner with digits and labels', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('DUET Admission Test 2027')).toBeInTheDocument();
+      expect(screen.getByText('Days')).toBeInTheDocument();
+      expect(screen.getByText('Hours')).toBeInTheDocument();
+      expect(screen.getByText('Minutes')).toBeInTheDocument();
+      expect(screen.getByText('Seconds')).toBeInTheDocument();
+      expect(screen.getByText('Preparation Journey Timeline')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Edit target exam date/i })).toBeInTheDocument();
+    });
+  });
+
+  it('opens and closes the target date configuration modal', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    const changeBtn = screen.getByRole('button', { name: /Edit target exam date/i });
+    fireEvent.click(changeBtn);
+
+    expect(screen.getByText('Configure Target Exam Date')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Event \/ Exam Title/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Target Admission Date/i)).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    fireEvent.click(cancelBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Configure Target Exam Date')).not.toBeInTheDocument();
+    });
+  });
 });
+

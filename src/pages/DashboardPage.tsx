@@ -4,6 +4,7 @@ import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
 import type { SyllabusTopic } from '@/domain/types';
 import { calculateOverallProgress } from '@/domain/calculations';
+import { CountdownBanner } from '@/components/dashboard/CountdownBanner';
 import { OverallProgressCard } from '@/components/dashboard/OverallProgressCard';
 import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid';
 
@@ -34,6 +35,9 @@ export const DashboardPage: React.FC = () => {
           Turn a huge syllabus into a visible journey. Every completed topic brings you closer.
         </p>
       </div>
+
+      {/* Countdown Hero Banner */}
+      <CountdownBanner />
 
       {/* Top Level Metric Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
