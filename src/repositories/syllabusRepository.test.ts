@@ -11,6 +11,11 @@ describe('StaticSyllabusRepository', () => {
     expect(subjects.map((s) => s.id)).toContain('cse');
   });
 
+  it('retrieves all 161 syllabus topics', async () => {
+    const topics = await repo.getAllTopics();
+    expect(topics).toHaveLength(161);
+  });
+
   it('retrieves subject by ID accurately', async () => {
     const math = await repo.getSubjectById('math');
     expect(math).toBeDefined();

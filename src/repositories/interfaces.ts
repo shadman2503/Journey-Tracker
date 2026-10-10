@@ -27,6 +27,7 @@ export interface ISyllabusRepository {
   getTopicsBySubject(subjectId: SubjectId): Promise<SyllabusTopic[]>;
   getSectionsBySubject(subjectId: SubjectId): Promise<SectionGroup[]>;
   searchTopics(query: string, subjectId?: SubjectId): Promise<SyllabusTopic[]>;
+  getAllTopics(): Promise<SyllabusTopic[]>;
 }
 
 export interface ITopicProgressRepository {

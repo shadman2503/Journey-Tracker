@@ -182,4 +182,32 @@ describe('SyllabusPage', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it('renders subject completion percentage and progress bar', async () => {
+    useTopicProgressStore.setState({
+      progressMap: {
+        'math-alg-complex': {
+          topicId: 'math-alg-complex',
+          status: 'strong',
+          updatedAt: '',
+        },
+      },
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/syllabus?subject=math']}>
+        <SyllabusPage />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading syllabus...')).not.toBeInTheDocument();
+      expect(screen.getByText('Subject Completion:')).toBeInTheDocument();
+      // 1 strong topic out of 38 math topics = ~3%
+      expect(screen.getByText('3%')).toBeInTheDocument();
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    });
+  });
 });

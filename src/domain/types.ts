@@ -36,6 +36,27 @@ export interface TopicProgress {
   updatedAt: string;
 }
 
+export interface SubjectProgressSummary {
+  subjectId: SubjectId;
+  subjectName: string;
+  totalTopics: number;
+  completedTopics: number; // status === 'strong'
+  inProgressTopics: number; // status === 'learning' || 'practicing'
+  needsRevisionTopics: number; // status === 'needs_revision'
+  notStartedTopics: number; // status === 'not_started' or untracked
+  percentage: number; // 0 to 100 weighted
+}
+
+export interface OverallProgressSummary {
+  totalTopics: number;
+  completedTopics: number;
+  inProgressTopics: number;
+  needsRevisionTopics: number;
+  notStartedTopics: number;
+  percentage: number; // 0 to 100 weighted across all subjects
+  subjects: Record<SubjectId, SubjectProgressSummary>;
+}
+
 export interface StudySession {
   id?: number;
   date: string;

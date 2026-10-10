@@ -24,6 +24,10 @@ export class StaticSyllabusRepository implements ISyllabusRepository {
       .sort((a, b) => a.order - b.order);
   }
 
+  async getAllTopics(): Promise<SyllabusTopic[]> {
+    return [...this.topics];
+  }
+
   async getSectionsBySubject(subjectId: SubjectId): Promise<SectionGroup[]> {
     const subjectTopics = await this.getTopicsBySubject(subjectId);
     const sectionMap = new Map<string, Map<string, SyllabusTopic[]>>();

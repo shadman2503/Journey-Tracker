@@ -1,25 +1,55 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
 import type { SubjectId, SubjectMeta, SyllabusTopic, TopicStatus } from '@/domain/types';
 import type { SectionGroup } from '@/repositories/interfaces';
 import { calculateStatusBreakdown, STATUS_CONFIG, STATUS_ORDER } from '@/domain/progress';
+import { calculateTopicProgressPercentage } from '@/domain/calculations';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { SubjectTabs } from '@/components/syllabus/SubjectTabs';
 import { SyllabusSearchBar } from '@/components/syllabus/SyllabusSearchBar';
 import { ChapterAccordion } from '@/components/syllabus/ChapterAccordion';
 import { TopicCard } from '@/components/syllabus/TopicCard';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { BookOpen, SearchX, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const SyllabusPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const subjectParam = searchParams.get('subject') as SubjectId | null;
+
   const [subjects, setSubjects] = useState<SubjectMeta[]>([]);
-  const [selectedSubjectId, setSelectedSubjectId] = useState<SubjectId>('math');
+  const [selectedSubjectId, setSelectedSubjectId] = useState<SubjectId>(() => {
+    if (
+      subjectParam &&
+      ['math', 'physics', 'chemistry', 'english', 'cse'].includes(subjectParam)
+    ) {
+      return subjectParam;
+    }
+    return 'math';
+  });
   const [sections, setSections] = useState<SectionGroup[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<SyllabusTopic[]>([]);
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'all' | TopicStatus>('all');
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Sync state if URL search param changes externally
+  useEffect(() => {
+    if (
+      subjectParam &&
+      ['math', 'physics', 'chemistry', 'english', 'cse'].includes(subjectParam) &&
+      subjectParam !== selectedSubjectId
+    ) {
+      setSelectedSubjectId(subjectParam);
+    }
+  }, [subjectParam, selectedSubjectId]);
+
+  const handleSelectSubject = (id: SubjectId) => {
+    setSelectedSubjectId(id);
+    setSearchParams({ subject: id });
+  };
 
   const loadProgress = useTopicProgressStore((state) => state.loadProgress);
   const progressMap = useTopicProgressStore((state) => state.progressMap);
@@ -74,6 +104,20 @@ export const SyllabusPage: React.FC = () => {
     return calculateStatusBreakdown(currentSubjectTopics, progressMap);
   }, [currentSubjectTopics, progressMap]);
 
+  const subjectPercentage = useMemo(() => {
+    return calculateTopicProgressPercentage(
+      currentSubjectTopics.length,
+      currentSubjectTopics.map(
+        (t) =>
+          progressMap[t.id] ?? {
+            topicId: t.id,
+            status: 'not_started',
+            updatedAt: '',
+          }
+      )
+    );
+  }, [currentSubjectTopics, progressMap]);
+
   // Filter sections by selectedStatusFilter
   const filteredSections = useMemo(() => {
     if (selectedStatusFilter === 'all') return sections;
@@ -120,7 +164,7 @@ export const SyllabusPage: React.FC = () => {
           subjects={subjects}
           selectedSubjectId={selectedSubjectId}
           onSelectSubject={(id) => {
-            setSelectedSubjectId(id);
+            handleSelectSubject(id);
             setSearchQuery('');
             setSelectedStatusFilter('all');
           }}
@@ -184,42 +228,57 @@ export const SyllabusPage: React.FC = () => {
 
       {/* Subject Description & Mastery Breakdown Card */}
       {currentSubject && !searchQuery && (
-        <div className="p-4 rounded-xl border bg-card/60 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h2 className="font-semibold text-foreground text-base">
-              {currentSubject.name}{' '}
-              {currentSubject.nameBn && (
-                <span className="text-muted-foreground font-normal">
-                  ({currentSubject.nameBn})
-                </span>
-              )}
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              {currentSubject.description}
-            </p>
+        <div className="p-4.5 rounded-xl border bg-card/60 space-y-3.5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <h2 className="font-semibold text-foreground text-base">
+                {currentSubject.name}{' '}
+                {currentSubject.nameBn && (
+                  <span className="text-muted-foreground font-normal">
+                    ({currentSubject.nameBn})
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {currentSubject.description}
+              </p>
+            </div>
+
+            <div className="flex items-baseline gap-2 self-start md:self-auto flex-shrink-0">
+              <span className="text-xs text-muted-foreground font-medium">Subject Completion:</span>
+              <span className="text-xl font-bold text-foreground">{subjectPercentage}%</span>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              {statusBreakdown.strong} Strong
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium border border-amber-500/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              {statusBreakdown.practicing} Practicing
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium border border-blue-500/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-              {statusBreakdown.learning} Learning
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-medium border border-rose-500/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-              {statusBreakdown.needs_revision} Needs Revision
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium border">
-              <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
-              {statusBreakdown.not_started} Not Started
-            </span>
+          <div className="space-y-2 pt-1 border-t">
+            <Progress value={subjectPercentage} className="h-2" />
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs pt-0.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {statusBreakdown.strong} Strong
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium border border-amber-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  {statusBreakdown.practicing} Practicing
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium border border-blue-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                  {statusBreakdown.learning} Learning
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-medium border border-rose-500/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                  {statusBreakdown.needs_revision} Needs Revision
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium border">
+                  <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                  {statusBreakdown.not_started} Not Started
+                </span>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium">
+                {currentSubjectTopics.length} Total Topics
+              </span>
+            </div>
           </div>
         </div>
       )}
