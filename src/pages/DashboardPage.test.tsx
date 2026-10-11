@@ -366,6 +366,71 @@ describe('DashboardPage', () => {
 
     expect(screen.queryByText('Weak Area Diagnostic Radar')).not.toBeInTheDocument();
   });
+
+  it('renders revision recommendations spotlight widget empty state when no revisions are due', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Revision Recommendations')).toBeInTheDocument();
+      expect(screen.getByText('Up to Date')).toBeInTheDocument();
+      expect(screen.getByText('No Revisions Due Today')).toBeInTheDocument();
+    });
+  });
+
+  it('renders revision recommendations spotlight and handles practice and planner modal workflows', async () => {
+    useTopicProgressStore.setState({
+      progressMap: {
+        'math-alg-complex': {
+          topicId: 'math-alg-complex',
+          status: 'needs_revision',
+          updatedAt: '2026-08-01T00:00:00.000Z',
+        },
+      },
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/View Full Plan/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Urgent Drill/i).length).toBeGreaterThan(0);
+    });
+
+    // Test clicking Start Practice pre-fills session modal
+    const startPracticeBtn = screen.getAllByRole('button', {
+      name: /Start Practice/i,
+    })[0];
+    fireEvent.click(startPracticeBtn);
+
+    const sessionState = useStudySessionStore.getState();
+    expect(sessionState.isRecordModalOpen).toBe(true);
+    expect(sessionState.prefilledSubjectId).toBe('math');
+    expect(sessionState.prefilledTopicId).toBe('math-alg-complex');
+
+    // Test opening the full revision recommendations modal dialog
+    const viewPlanBtn = screen.getByRole('button', { name: /View Full Plan/i });
+    fireEvent.click(viewPlanBtn);
+
+    expect(screen.getByText('Smart Revision Recommendations')).toBeInTheDocument();
+
+    // Close the revision recommendations dialog
+    const closeDialogBtn = screen.getByLabelText(/Close revision dialog/i);
+    fireEvent.click(closeDialogBtn);
+
+    expect(
+      screen.queryByText('Smart Revision Recommendations')
+    ).not.toBeInTheDocument();
+  });
 });
+
 
 

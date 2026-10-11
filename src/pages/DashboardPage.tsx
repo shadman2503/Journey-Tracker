@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Compass, BookCheck, Clock, Plus, Award, Target, X } from 'lucide-react';
+import { Compass, BookCheck, Clock, Plus, Award, Target, X, Sparkles } from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { useMockTestStore } from '@/stores/useMockTestStore';
@@ -11,6 +11,7 @@ import { calculateOverallProgress } from '@/domain/calculations';
 import { calculateStudyMetrics } from '@/domain/studySession';
 import { calculateStreak } from '@/domain/streak';
 import { detectWeakAreas } from '@/domain/weakArea';
+import { generateRevisionRecommendations } from '@/domain/revisionRecommendations';
 import { CountdownBanner } from '@/components/dashboard/CountdownBanner';
 import { OverallProgressCard } from '@/components/dashboard/OverallProgressCard';
 import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid';
@@ -20,12 +21,15 @@ import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { RecordMockTestModal } from '@/components/mock/RecordMockTestModal';
 import { WeakAreaDashboardWidget } from '@/components/weakArea/WeakAreaDashboardWidget';
 import { WeakAreaRadar } from '@/components/weakArea/WeakAreaRadar';
+import { RevisionDashboardWidget } from '@/components/revision/RevisionDashboardWidget';
+import { RevisionRecommendationsList } from '@/components/revision/RevisionRecommendationsList';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
   const [isRadarModalOpen, setIsRadarModalOpen] = useState<boolean>(false);
+  const [isRevisionModalOpen, setIsRevisionModalOpen] = useState<boolean>(false);
 
   const loadProgress = useTopicProgressStore((state) => state.loadProgress);
   const progressMap = useTopicProgressStore((state) => state.progressMap);
@@ -63,13 +67,34 @@ export const DashboardPage: React.FC = () => {
     return detectWeakAreas(topics, progressMap, sessions, mistakes, new Date(), 20);
   }, [topics, progressMap, sessions, mistakes]);
 
+  const revisionRecommendations = useMemo(() => {
+    return generateRevisionRecommendations(
+      topics,
+      progressMap,
+      sessions,
+      mistakes,
+      new Date(),
+      { weakAreas }
+    );
+  }, [topics, progressMap, sessions, mistakes, weakAreas]);
+
   const handlePracticeTopic = (subjectId: SubjectId, topicId: string) => {
     setIsRadarModalOpen(false);
     openRecordModal({ subjectId, topicId });
   };
 
+  const handleStartPracticeRevision = (
+    subjectId: SubjectId,
+    topicId: string,
+    _suggestedDurationMinutes?: number
+  ) => {
+    setIsRevisionModalOpen(false);
+    openRecordModal({ subjectId, topicId });
+  };
+
   const handleViewMistakes = () => {
     setIsRadarModalOpen(false);
+    setIsRevisionModalOpen(false);
     navigate('/mistakes');
   };
 
@@ -181,6 +206,14 @@ export const DashboardPage: React.FC = () => {
         onViewMistakes={handleViewMistakes}
       />
 
+      {/* Revision Recommendations Planner Spotlight */}
+      <RevisionDashboardWidget
+        recommendations={revisionRecommendations}
+        onViewPlan={() => setIsRevisionModalOpen(true)}
+        onStartPractice={handleStartPracticeRevision}
+        onViewMistakes={handleViewMistakes}
+      />
+
       {/* Study Activity & Consistency Heatmap */}
       <ActivityHeatmap sessions={sessions} />
 
@@ -223,6 +256,52 @@ export const DashboardPage: React.FC = () => {
               <WeakAreaRadar
                 weakAreas={weakAreas}
                 onPracticeTopic={handlePracticeTopic}
+                onViewMistakes={handleViewMistakes}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full Revision Recommendations Dialog Modal */}
+      {isRevisionModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Revision Recommendations Dialog"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
+        >
+          <div className="relative w-full max-w-4xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b">
+              <div className="flex items-center gap-2.5">
+                <span className="p-2 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                  <Sparkles className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">
+                    Smart Revision Recommendations
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Targeted study plan prioritized by memory decay intervals and weakness diagnoses
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRevisionModalOpen(false)}
+                aria-label="Close revision dialog"
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Plan Body */}
+            <div className="py-4">
+              <RevisionRecommendationsList
+                recommendations={revisionRecommendations}
+                onStartPractice={handleStartPracticeRevision}
                 onViewMistakes={handleViewMistakes}
               />
             </div>
