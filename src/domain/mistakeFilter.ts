@@ -6,6 +6,7 @@ export type MistakeSortOption = 'newest' | 'oldest' | 'review_date' | 'status';
 export interface MistakeFilterOptions {
   searchQuery?: string;
   subjectId?: SubjectId | 'all';
+  topicId?: string;
   type?: MistakeType | 'all';
   status?: MistakeStatus | 'all';
   urgency?: MistakeUrgencyFilter;
@@ -139,6 +140,11 @@ export function filterAndSortMistakes(
   const filtered = mistakes.filter((m) => {
     // Subject filter
     if (subject && m.subjectId !== subject) {
+      return false;
+    }
+
+    // Topic filter
+    if (options.topicId && m.topicId !== options.topicId) {
       return false;
     }
 

@@ -15,6 +15,7 @@ export interface MistakeFilterBarProps {
   onResetFilters: () => void;
   totalCount: number;
   filteredCount: number;
+  topicMap?: Record<string, string>;
 }
 
 const SUBJECT_OPTIONS: { id: SubjectId | 'all'; label: string }[] = [
@@ -46,9 +47,11 @@ export const MistakeFilterBar: React.FC<MistakeFilterBarProps> = ({
   onResetFilters,
   totalCount,
   filteredCount,
+  topicMap,
 }) => {
   const isFiltered =
     !!filters.searchQuery ||
+    !!filters.topicId ||
     (filters.subjectId && filters.subjectId !== 'all') ||
     (filters.type && filters.type !== 'all') ||
     (filters.status && filters.status !== 'all') ||
@@ -236,6 +239,24 @@ export const MistakeFilterBar: React.FC<MistakeFilterBarProps> = ({
           </select>
         </div>
       </div>
+
+      {/* Active Topic Filter Pill */}
+      {filters.topicId && (
+        <div className="flex items-center gap-2 pt-2 border-t border-border/40 text-xs">
+          <span className="text-muted-foreground font-medium">Topic Filter:</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 font-semibold text-xs">
+            <span>{topicMap?.[filters.topicId] || filters.topicId}</span>
+            <button
+              type="button"
+              onClick={() => onFilterChange({ ...filters, topicId: undefined })}
+              className="p-0.5 rounded-xs hover:bg-primary/20 transition-colors"
+              aria-label="Remove topic filter"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        </div>
+      )}
     </div>
   );
 };

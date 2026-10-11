@@ -233,4 +233,102 @@ describe('MistakesPage', () => {
       expect(useMistakeStore.getState().mistakes).toHaveLength(1);
     });
   });
+
+  it('renders Recurring Hotspots KPI count in summary grid', () => {
+    // Add a second mistake with topicId: 'math-calc-01' so math-calc-01 becomes a hotspot (>= 2 mistakes)
+    const mistakesWithHotspot: Mistake[] = [
+      ...sampleMistakes,
+      {
+        id: 3,
+        subjectId: 'math',
+        topicId: 'math-calc-01',
+        questionRef: 'Math Q10',
+        type: 'calculation',
+        whatWentWrong: 'Sign error in denominator',
+        correctSolution: 'Keep positive sign',
+        status: 'unresolved',
+        createdAt: '2026-10-03T10:00:00.000Z',
+      },
+    ];
+    useMistakeStore.setState({ mistakes: mistakesWithHotspot });
+
+    render(<MistakesPage />);
+
+    expect(screen.getByText('Recurring Hotspots')).toBeInTheDocument();
+    expect(screen.getByText('Topics with ≥ 2 slips')).toBeInTheDocument();
+  });
+
+  it('switches between Mistakes Notebook and Pattern Analysis tabs', async () => {
+    const mistakesWithHotspot: Mistake[] = [
+      ...sampleMistakes,
+      {
+        id: 3,
+        subjectId: 'math',
+        topicId: 'math-calc-01',
+        questionRef: 'Math Q10',
+        type: 'calculation',
+        whatWentWrong: 'Sign error in denominator',
+        correctSolution: 'Keep positive sign',
+        status: 'unresolved',
+        createdAt: '2026-10-03T10:00:00.000Z',
+      },
+    ];
+    useMistakeStore.setState({ mistakes: mistakesWithHotspot });
+
+    render(<MistakesPage />);
+
+    // Click on Pattern Analysis & Hotspots tab
+    const patternsTab = screen.getByRole('button', { name: /Pattern Analysis & Hotspots/i });
+    fireEvent.click(patternsTab);
+
+    // Verify pattern analysis views are visible
+    expect(screen.getByText('Recurring Mistake Hotspots')).toBeInTheDocument();
+    expect(screen.getByText('Mistake Classification Breakdown')).toBeInTheDocument();
+
+    // Click back to Mistakes Notebook tab
+    const notebookTab = screen.getByRole('button', { name: /Mistakes Notebook/i });
+    fireEvent.click(notebookTab);
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Differentiation Basics').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  it('drills down from a hotspot topic to the filtered notebook view', async () => {
+    const mistakesWithHotspot: Mistake[] = [
+      ...sampleMistakes,
+      {
+        id: 3,
+        subjectId: 'math',
+        topicId: 'math-calc-01',
+        questionRef: 'Math Q10',
+        type: 'calculation',
+        whatWentWrong: 'Sign error in denominator',
+        correctSolution: 'Keep positive sign',
+        status: 'unresolved',
+        createdAt: '2026-10-03T10:00:00.000Z',
+      },
+    ];
+    useMistakeStore.setState({ mistakes: mistakesWithHotspot });
+
+    render(<MistakesPage />);
+
+    // Switch to patterns tab
+    const patternsTab = screen.getByRole('button', { name: /Pattern Analysis & Hotspots/i });
+    fireEvent.click(patternsTab);
+
+    // Find and click the drill-down button on the hotspot card
+    await waitFor(() => {
+      expect(screen.getByText('Differentiation Basics')).toBeInTheDocument();
+    });
+
+    const drillDownBtn = screen.getByRole('button', { name: /Filter & Review Mistakes/i });
+    fireEvent.click(drillDownBtn);
+
+    // Should switch back to notebook tab and filter down to the 2 math mistakes for Differentiation Basics
+    await waitFor(() => {
+      expect(screen.getAllByText('Differentiation Basics').length).toBeGreaterThanOrEqual(1);
+      expect(screen.queryByText('Hydrocarbons')).not.toBeInTheDocument();
+    });
+  });
 });

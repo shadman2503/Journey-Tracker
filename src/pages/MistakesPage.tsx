@@ -7,18 +7,27 @@ import {
   RotateCcw,
   Sparkles,
   SearchX,
+  Flame,
+  BookOpen,
 } from 'lucide-react';
 import { useMistakeStore } from '@/stores/useMistakeStore';
 import { MistakeCard } from '@/components/mistake/MistakeCard';
 import { RecordMistakeModal } from '@/components/mistake/RecordMistakeModal';
 import { MistakeFilterBar } from '@/components/mistake/MistakeFilterBar';
 import { MistakeReviewModal } from '@/components/mistake/MistakeReviewModal';
+import { RecurringMistakesHotspots } from '@/components/mistake/RecurringMistakesHotspots';
+import { MistakePatternInsights } from '@/components/mistake/MistakePatternInsights';
+import { MistakeTypeDistribution } from '@/components/mistake/MistakeTypeDistribution';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
 import {
   filterAndSortMistakes,
   isDueForReview,
   type MistakeFilterOptions,
 } from '@/domain/mistakeFilter';
+import {
+  detectTopicHotspots,
+  generatePatternInsights,
+} from '@/domain/recurringMistakes';
 import { Button } from '@/components/ui/button';
 
 const DEFAULT_FILTERS: MistakeFilterOptions = {
@@ -39,6 +48,7 @@ export const MistakesPage: React.FC = () => {
   const deleteMistake = useMistakeStore((state) => state.deleteMistake);
   const getMetrics = useMistakeStore((state) => state.getMetrics);
 
+  const [activeTab, setActiveTab] = useState<'notebook' | 'patterns'>('notebook');
   const [filters, setFilters] = useState<MistakeFilterOptions>(DEFAULT_FILTERS);
   const [topicMap, setTopicMap] = useState<Record<string, string>>({});
 
@@ -64,12 +74,28 @@ export const MistakesPage: React.FC = () => {
     return mistakes.filter((m) => isDueForReview(m)).length;
   }, [mistakes]);
 
+  const hotspots = useMemo(() => {
+    return detectTopicHotspots(mistakes, topicMap, 2);
+  }, [mistakes, topicMap]);
+
+  const insights = useMemo(() => {
+    return generatePatternInsights(mistakes, topicMap, hotspots);
+  }, [mistakes, topicMap, hotspots]);
+
   const filteredMistakes = useMemo(() => {
     return filterAndSortMistakes(mistakes, filters, topicMap);
   }, [mistakes, filters, topicMap]);
 
   const handleResetFilters = () => {
     setFilters(DEFAULT_FILTERS);
+  };
+
+  const handleDrillDownTopic = (topicId: string) => {
+    setFilters({
+      ...DEFAULT_FILTERS,
+      topicId,
+    });
+    setActiveTab('notebook');
   };
 
   return (
@@ -132,7 +158,7 @@ export const MistakesPage: React.FC = () => {
       )}
 
       {/* Summary KPI Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
         {/* Total Mistakes */}
         <div className="rounded-xl border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between pb-2">
@@ -143,7 +169,7 @@ export const MistakesPage: React.FC = () => {
           </div>
           <div className="text-2xl font-black tracking-tight">{metrics.totalMistakes}</div>
           <p className="text-xs text-muted-foreground mt-1">
-            Across all subjects & tests
+            Across all subjects
           </p>
         </div>
 
@@ -179,8 +205,24 @@ export const MistakesPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Resolution Rate */}
+        {/* Recurring Hotspots */}
         <div className="rounded-xl border bg-card p-5 shadow-xs">
+          <div className="flex items-center justify-between pb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Recurring Hotspots
+            </span>
+            <Flame className="h-4 w-4 text-rose-500" />
+          </div>
+          <div className="text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
+            {hotspots.length}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Topics with ≥ 2 slips
+          </p>
+        </div>
+
+        {/* Resolution Rate */}
+        <div className="rounded-xl border bg-card p-5 shadow-xs col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Fixed & Mastered
@@ -196,7 +238,7 @@ export const MistakesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Mistakes Section */}
+      {/* Main Mistakes Content */}
       {mistakes.length === 0 ? (
         /* Overall Empty State */
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center border rounded-2xl bg-card border-dashed space-y-4">
@@ -215,58 +257,121 @@ export const MistakesPage: React.FC = () => {
           </Button>
         </div>
       ) : (
-        <div className="space-y-4">
-          {/* Multi-facet Filter Bar */}
-          <MistakeFilterBar
-            filters={filters}
-            onFilterChange={setFilters}
-            onResetFilters={handleResetFilters}
-            totalCount={mistakes.length}
-            filteredCount={filteredMistakes.length}
-          />
-
-          {/* Filtered Empty State */}
-          {filteredMistakes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-14 px-4 text-center border rounded-2xl bg-card border-dashed space-y-3">
-              <div className="p-3 rounded-2xl bg-muted/50 text-muted-foreground">
-                <SearchX className="h-8 w-8" />
-              </div>
-              <div className="space-y-1 max-w-sm">
-                <h3 className="text-base font-bold text-foreground">No Mistakes Match Your Filters</h3>
-                <p className="text-xs text-muted-foreground">
-                  Try adjusting search keywords or clearing active filters to see your recorded mistakes.
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleResetFilters}
-                className="gap-1.5 text-xs shadow-xs"
-              >
-                <RotateCcw className="h-3 w-3" />
-                <span>Reset All Filters</span>
-              </Button>
-            </div>
-          ) : (
-            /* Filtered Mistakes Cards Grid */
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-                <span>Mistake Entries</span>
-                <span>
-                  {filteredMistakes.length} {filteredMistakes.length === 1 ? 'entry' : 'entries'}
+        <div className="space-y-6">
+          {/* View Mode Switcher Tabs */}
+          <div className="flex items-center gap-6 border-b border-border">
+            <button
+              type="button"
+              onClick={() => setActiveTab('notebook')}
+              className={`flex items-center gap-2 pb-3 text-sm font-semibold border-b-2 transition-colors ${
+                activeTab === 'notebook'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Mistakes Notebook</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+                {mistakes.length}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('patterns')}
+              className={`flex items-center gap-2 pb-3 text-sm font-semibold border-b-2 transition-colors ${
+                activeTab === 'patterns'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Flame className="h-4 w-4" />
+              <span>Pattern Analysis & Hotspots</span>
+              {hotspots.length > 0 && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold border border-rose-500/20">
+                  {hotspots.length}
                 </span>
-              </div>
+              )}
+            </button>
+          </div>
 
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                {filteredMistakes.map((mistake) => (
-                  <MistakeCard
-                    key={mistake.id}
-                    mistake={mistake}
-                    onUpdateStatus={(id, status) => updateMistake(id, { status })}
-                    onDelete={deleteMistake}
-                  />
-                ))}
-              </div>
+          {/* Tab 1: Mistakes Notebook */}
+          {activeTab === 'notebook' && (
+            <div className="space-y-4">
+              {/* Multi-facet Filter Bar */}
+              <MistakeFilterBar
+                filters={filters}
+                onFilterChange={setFilters}
+                onResetFilters={handleResetFilters}
+                totalCount={mistakes.length}
+                filteredCount={filteredMistakes.length}
+                topicMap={topicMap}
+              />
+
+              {/* Filtered Empty State */}
+              {filteredMistakes.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-14 px-4 text-center border rounded-2xl bg-card border-dashed space-y-3">
+                  <div className="p-3 rounded-2xl bg-muted/50 text-muted-foreground">
+                    <SearchX className="h-8 w-8" />
+                  </div>
+                  <div className="space-y-1 max-w-sm">
+                    <h3 className="text-base font-bold text-foreground">No Mistakes Match Your Filters</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Try adjusting search keywords or clearing active filters to see your recorded mistakes.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleResetFilters}
+                    className="gap-1.5 text-xs shadow-xs"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                    <span>Reset All Filters</span>
+                  </Button>
+                </div>
+              ) : (
+                /* Filtered Mistakes Cards Grid */
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+                    <span>Mistake Entries</span>
+                    <span>
+                      {filteredMistakes.length} {filteredMistakes.length === 1 ? 'entry' : 'entries'}
+                    </span>
+                  </div>
+
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {filteredMistakes.map((mistake) => (
+                      <MistakeCard
+                        key={mistake.id}
+                        mistake={mistake}
+                        onUpdateStatus={(id, status) => updateMistake(id, { status })}
+                        onDelete={deleteMistake}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tab 2: Pattern Analysis & Hotspots */}
+          {activeTab === 'patterns' && (
+            <div className="space-y-6">
+              {/* Pattern Insights Callouts */}
+              <MistakePatternInsights
+                insights={insights}
+                onSelectTopic={handleDrillDownTopic}
+              />
+
+              {/* Recurring Hotspots Grid */}
+              <RecurringMistakesHotspots
+                hotspots={hotspots}
+                onSelectTopic={handleDrillDownTopic}
+                minThreshold={2}
+              />
+
+              {/* Mistake Type Distribution */}
+              <MistakeTypeDistribution mistakes={mistakes} />
             </div>
           )}
         </div>
