@@ -5,6 +5,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { SyllabusPage } from '@/pages/SyllabusPage';
 import { StudyLogPage } from '@/pages/StudyLogPage';
 import { MockTestsPage } from '@/pages/MockTestsPage';
+import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { useAppStore } from '@/stores/useAppStore';
 
 export const App: React.FC = () => {
@@ -28,6 +29,7 @@ export const App: React.FC = () => {
             <Route path='/syllabus' element={<SyllabusPage />} />
             <Route path='/study-log' element={<StudyLogPage />} />
             <Route path='/mock-tests' element={<MockTestsPage />} />
+            <Route path='/analytics' element={<AnalyticsPage />} />
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </main>
