@@ -20,7 +20,7 @@ export interface CountdownResult {
 
 export const DEFAULT_EXAM_DATE = '2027-06-20T09:00:00+06:00';
 export const DEFAULT_EXAM_TITLE = 'DUET Admission Test 2027';
-export const TIMELINE_START_DATE = '2026-01-01T00:00:00+06:00';
+export const TIMELINE_START_DATE = '2026-10-01T00:00:00+06:00';
 
 export const URGENCY_MESSAGES: Record<UrgencyLevel, string> = {
   relaxed:
