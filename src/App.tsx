@@ -7,6 +7,7 @@ import { StudyLogPage } from '@/pages/StudyLogPage';
 import { MockTestsPage } from '@/pages/MockTestsPage';
 import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { MistakesPage } from '@/pages/MistakesPage';
+import { JourneyPage } from '@/pages/JourneyPage';
 import { useAppStore } from '@/stores/useAppStore';
 
 export const App: React.FC = () => {
@@ -32,6 +33,7 @@ export const App: React.FC = () => {
             <Route path='/mock-tests' element={<MockTestsPage />} />
             <Route path='/analytics' element={<AnalyticsPage />} />
             <Route path='/mistakes' element={<MistakesPage />} />
+            <Route path='/journey' element={<JourneyPage />} />
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </main>

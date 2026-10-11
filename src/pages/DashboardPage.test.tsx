@@ -29,6 +29,11 @@ vi.mock('@/repositories/dexie', () => ({
     update: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn().mockResolvedValue(undefined),
   },
+  milestoneRepo: {
+    getAll: vi.fn().mockResolvedValue([]),
+    add: vi.fn().mockResolvedValue(1),
+    delete: vi.fn().mockResolvedValue(undefined),
+  },
 }));
 
 describe('DashboardPage', () => {
@@ -429,6 +434,48 @@ describe('DashboardPage', () => {
     expect(
       screen.queryByText('Smart Revision Recommendations')
     ).not.toBeInTheDocument();
+  });
+
+  it('renders journey milestones widget and handles add goal modal workflow', async () => {
+    useStudySessionStore.setState({
+      sessions: [
+        {
+          id: 1,
+          date: '2026-10-01',
+          subjectId: 'math',
+          topicId: 'math-1',
+          durationMinutes: 45,
+          questionsSolved: 60,
+          correctAnswers: 50,
+          createdAt: '',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey Milestones')).toBeInTheDocument();
+      expect(screen.getByText(/Unlocked/i)).toBeInTheDocument();
+      expect(screen.getByText('Fifty Questions Down')).toBeInTheDocument();
+    });
+
+    // Test opening Add Goal modal from widget
+    const addGoalBtn = screen.getByRole('button', { name: /Add Goal/i });
+    fireEvent.click(addGoalBtn);
+
+    expect(screen.getByRole('dialog', { name: /Add Custom Milestone/i })).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    fireEvent.click(cancelBtn);
+
+    expect(screen.queryByRole('dialog', { name: /Add Custom Milestone/i })).not.toBeInTheDocument();
   });
 });
 

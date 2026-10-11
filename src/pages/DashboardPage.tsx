@@ -23,6 +23,9 @@ import { WeakAreaDashboardWidget } from '@/components/weakArea/WeakAreaDashboard
 import { WeakAreaRadar } from '@/components/weakArea/WeakAreaRadar';
 import { RevisionDashboardWidget } from '@/components/revision/RevisionDashboardWidget';
 import { RevisionRecommendationsList } from '@/components/revision/RevisionRecommendationsList';
+import { useMilestoneStore } from '@/stores/useMilestoneStore';
+import { MilestoneDashboardWidget } from '@/components/milestones/MilestoneDashboardWidget';
+import { AddMilestoneModal } from '@/components/milestones/AddMilestoneModal';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
@@ -40,16 +43,26 @@ export const DashboardPage: React.FC = () => {
   const openMockModal = useMockTestStore((state) => state.openRecordModal);
   const loadMistakes = useMistakeStore((state) => state.loadMistakes);
   const mistakes = useMistakeStore((state) => state.mistakes);
+  const mockTests = useMockTestStore((state) => state.tests);
+
+  const loadCustomMilestones = useMilestoneStore((state) => state.loadCustomMilestones);
+  const customMilestones = useMilestoneStore((state) => state.customMilestones);
+  const getUnifiedMilestones = useMilestoneStore((state) => state.getUnifiedMilestones);
+  const addCustomMilestone = useMilestoneStore((state) => state.addCustomMilestone);
+  const isMilestoneModalOpen = useMilestoneStore((state) => state.isAddModalOpen);
+  const openMilestoneModal = useMilestoneStore((state) => state.openAddModal);
+  const closeMilestoneModal = useMilestoneStore((state) => state.closeAddModal);
 
   useEffect(() => {
     loadProgress();
     loadSessions();
     loadMockTests();
     loadMistakes();
+    loadCustomMilestones();
     syllabusRepository.getAllTopics().then((data) => {
       setTopics(data);
     });
-  }, [loadProgress, loadSessions, loadMockTests, loadMistakes]);
+  }, [loadProgress, loadSessions, loadMockTests, loadMistakes, loadCustomMilestones]);
 
   const overallSummary = useMemo(() => {
     return calculateOverallProgress(topics, progressMap);
@@ -77,6 +90,10 @@ export const DashboardPage: React.FC = () => {
       { weakAreas }
     );
   }, [topics, progressMap, sessions, mistakes, weakAreas]);
+
+  const unifiedMilestones = useMemo(() => {
+    return getUnifiedMilestones(topics, progressMap, sessions, mockTests);
+  }, [getUnifiedMilestones, customMilestones, topics, progressMap, sessions, mockTests]);
 
   const handlePracticeTopic = (subjectId: SubjectId, topicId: string) => {
     setIsRadarModalOpen(false);
@@ -214,6 +231,13 @@ export const DashboardPage: React.FC = () => {
         onViewMistakes={handleViewMistakes}
       />
 
+      {/* Journey Milestones Spotlight */}
+      <MilestoneDashboardWidget
+        milestones={unifiedMilestones}
+        onViewAll={() => navigate('/journey')}
+        onAddGoal={openMilestoneModal}
+      />
+
       {/* Study Activity & Consistency Heatmap */}
       <ActivityHeatmap sessions={sessions} />
 
@@ -314,6 +338,13 @@ export const DashboardPage: React.FC = () => {
 
       {/* Record Mock Test Modal */}
       <RecordMockTestModal />
+
+      {/* Add Custom Milestone Modal */}
+      <AddMilestoneModal
+        isOpen={isMilestoneModalOpen}
+        onClose={closeMilestoneModal}
+        onSubmit={addCustomMilestone}
+      />
     </div>
   );
 };
