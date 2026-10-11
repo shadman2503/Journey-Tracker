@@ -72,7 +72,7 @@ describe('calculateCountdown', () => {
   });
 
   it('exposes the standard default DUET exam date constant', () => {
-    expect(DEFAULT_EXAM_DATE).toBe('2027-06-20T09:00:00+06:00');
+    expect(DEFAULT_EXAM_DATE).toBe('2027-04-30T09:00:00+06:00');
   });
 });
 

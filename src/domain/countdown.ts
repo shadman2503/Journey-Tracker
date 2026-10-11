@@ -18,7 +18,7 @@ export interface CountdownResult {
   targetDate: Date;
 }
 
-export const DEFAULT_EXAM_DATE = '2027-06-20T09:00:00+06:00';
+export const DEFAULT_EXAM_DATE = '2027-04-30T09:00:00+06:00';
 export const DEFAULT_EXAM_TITLE = 'DUET Admission Test 2027';
 export const TIMELINE_START_DATE = '2026-10-01T00:00:00+06:00';
 

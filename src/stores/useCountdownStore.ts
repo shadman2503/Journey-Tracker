@@ -31,6 +31,19 @@ export const useCountdownStore = create<CountdownState>()(
     }),
     {
       name: 'duet-countdown-storage',
+      version: 2,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as CountdownState;
+        if (version < 2) {
+          if (state?.targetDate === '2027-06-20T09:00:00+06:00') {
+            return {
+              ...state,
+              targetDate: DEFAULT_EXAM_DATE,
+            };
+          }
+        }
+        return state;
+      },
     }
   )
 );
