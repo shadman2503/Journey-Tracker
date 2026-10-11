@@ -58,17 +58,55 @@ describe('JourneyPage', () => {
     });
   });
 
-  it('renders page header and empty state when no data exists', async () => {
+  it('renders page header, view switcher, and timeline by default', async () => {
     render(<JourneyPage />);
 
-    expect(screen.getByText('Preparation Journey & Milestones')).toBeInTheDocument();
+    expect(
+      screen.getByText('Preparation Journey & Milestones'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Switch to Timeline view/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Switch to Grid view/i })).toBeInTheDocument();
 
+    // Timeline is default view
     await waitFor(() => {
-      expect(screen.getByText('No Milestones Found')).toBeInTheDocument();
+      expect(
+        screen.getByText('Preparation Journey Progress'),
+      ).toBeInTheDocument();
+      expect(screen.getByText('DUET Admission Test')).toBeInTheDocument();
+      expect(screen.getByText('Ultimate Destination')).toBeInTheDocument();
     });
   });
 
-  it('renders milestones when study activity exists and triggers add modal flow', async () => {
+  it('switches between Timeline view and Milestones Grid view', async () => {
+    render(<JourneyPage />);
+
+    // Initially in timeline view
+    expect(screen.getByText('Preparation Journey Progress')).toBeInTheDocument();
+
+    // Click grid view switcher
+    const gridBtn = screen.getByRole('button', { name: /Switch to Grid view/i });
+    fireEvent.click(gridBtn);
+
+    // Now in grid view
+    await waitFor(() => {
+      expect(screen.getByText('No Milestones Found')).toBeInTheDocument();
+      expect(
+        screen.getByText('Total Milestones Recorded'),
+      ).toBeInTheDocument();
+    });
+
+    // Switch back to timeline
+    const timelineBtn = screen.getByRole('button', {
+      name: /Switch to Timeline view/i,
+    });
+    fireEvent.click(timelineBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('Preparation Journey Progress')).toBeInTheDocument();
+    });
+  });
+
+  it('renders milestones when study activity exists in both views', async () => {
     useStudySessionStore.setState({
       sessions: [
         {
@@ -89,22 +127,40 @@ describe('JourneyPage', () => {
 
     render(<JourneyPage />);
 
+    // In timeline view
     await waitFor(() => {
       expect(screen.getByText('Journey Begun')).toBeInTheDocument();
       expect(screen.getByText('Fifty Questions Down')).toBeInTheDocument();
     });
 
-    // Test opening the Add Personal Goal modal
-    const addGoalBtn = screen.getAllByRole('button', { name: /Add Personal Goal/i })[0];
+    // Switch to grid view
+    fireEvent.click(screen.getByRole('button', { name: /Switch to Grid view/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey Begun')).toBeInTheDocument();
+      expect(screen.getByText('Fifty Questions Down')).toBeInTheDocument();
+    });
+  });
+
+  it('opens and closes Add Milestone modal', async () => {
+    render(<JourneyPage />);
+
+    const addGoalBtn = screen.getAllByRole('button', {
+      name: /Add Personal Goal/i,
+    })[0];
     fireEvent.click(addGoalBtn);
 
-    expect(screen.getByRole('dialog', { name: /Add Custom Milestone/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('dialog', { name: /Add Custom Milestone/i }),
+    ).toBeInTheDocument();
 
     // Close the modal
     const closeBtn = screen.getByLabelText(/Close add milestone dialog/i);
     fireEvent.click(closeBtn);
 
-    expect(screen.queryByRole('dialog', { name: /Add Custom Milestone/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: /Add Custom Milestone/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('adds and displays custom milestone', async () => {
@@ -113,7 +169,9 @@ describe('JourneyPage', () => {
     render(<JourneyPage />);
 
     // Open modal
-    const addGoalBtn = screen.getAllByRole('button', { name: /Add Personal Goal/i })[0];
+    const addGoalBtn = screen.getAllByRole('button', {
+      name: /Add Personal Goal/i,
+    })[0];
     fireEvent.click(addGoalBtn);
 
     fireEvent.change(screen.getByLabelText(/Milestone Title \*/i), {
@@ -127,8 +185,6 @@ describe('JourneyPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Finished Routine Setup')).toBeInTheDocument();
-      expect(screen.getByText('Personal Goal')).toBeInTheDocument();
     });
   });
 });
-
