@@ -15,6 +15,8 @@ interface MistakeState {
   loaded: boolean;
   isLoading: boolean;
   isRecordModalOpen: boolean;
+  editingMistake: Mistake | null;
+  isReviewSessionOpen: boolean;
   prefilledSubjectId?: SubjectId;
   prefilledTopicId?: string;
   prefilledQuestionRef?: string;
@@ -28,7 +30,10 @@ interface MistakeState {
     topicId?: string;
     questionRef?: string;
   }) => void;
+  openEditModal: (mistake: Mistake) => void;
   closeRecordModal: () => void;
+  openReviewSession: () => void;
+  closeReviewSession: () => void;
   getMetrics: () => MistakeMetricsSummary;
 }
 
@@ -37,6 +42,8 @@ export const useMistakeStore = create<MistakeState>((set, get) => ({
   loaded: false,
   isLoading: false,
   isRecordModalOpen: false,
+  editingMistake: null,
+  isReviewSessionOpen: false,
   prefilledSubjectId: undefined,
   prefilledTopicId: undefined,
   prefilledQuestionRef: undefined,
@@ -84,6 +91,7 @@ export const useMistakeStore = create<MistakeState>((set, get) => ({
     set((state) => ({
       mistakes: [created, ...state.mistakes],
       isRecordModalOpen: false,
+      editingMistake: null,
       prefilledSubjectId: undefined,
       prefilledTopicId: undefined,
       prefilledQuestionRef: undefined,
@@ -111,6 +119,8 @@ export const useMistakeStore = create<MistakeState>((set, get) => ({
 
     set((state) => ({
       mistakes: state.mistakes.map((m) => (m.id === id ? { ...m, ...updatePayload } : m)),
+      isRecordModalOpen: false,
+      editingMistake: null,
     }));
   },
 
@@ -124,23 +134,42 @@ export const useMistakeStore = create<MistakeState>((set, get) => ({
   openRecordModal: (prefill) => {
     set({
       isRecordModalOpen: true,
+      editingMistake: null,
       prefilledSubjectId: prefill?.subjectId,
       prefilledTopicId: prefill?.topicId,
       prefilledQuestionRef: prefill?.questionRef,
     });
   },
 
+  openEditModal: (mistake) => {
+    set({
+      isRecordModalOpen: true,
+      editingMistake: mistake,
+      prefilledSubjectId: mistake.subjectId,
+      prefilledTopicId: mistake.topicId,
+      prefilledQuestionRef: mistake.questionRef,
+    });
+  },
+
   closeRecordModal: () => {
     set({
       isRecordModalOpen: false,
+      editingMistake: null,
       prefilledSubjectId: undefined,
       prefilledTopicId: undefined,
       prefilledQuestionRef: undefined,
     });
   },
 
+  openReviewSession: () => {
+    set({ isReviewSessionOpen: true });
+  },
+
+  closeReviewSession: () => {
+    set({ isReviewSessionOpen: false });
+  },
+
   getMetrics: () => {
     return calculateMistakeMetrics(get().mistakes);
   },
 }));
-

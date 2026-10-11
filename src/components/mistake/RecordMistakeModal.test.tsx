@@ -15,6 +15,7 @@ vi.mock('@/repositories/syllabusRepository', () => ({
 vi.mock('@/repositories/dexie', () => ({
   mistakeRepo: {
     add: vi.fn().mockResolvedValue(100),
+    update: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -23,6 +24,7 @@ describe('RecordMistakeModal', () => {
     vi.clearAllMocks();
     useMistakeStore.setState({
       isRecordModalOpen: true,
+      editingMistake: null,
       prefilledSubjectId: undefined,
       prefilledTopicId: undefined,
       prefilledQuestionRef: undefined,
@@ -63,6 +65,43 @@ describe('RecordMistakeModal', () => {
       expect(useMistakeStore.getState().mistakes).toHaveLength(1);
     });
     expect(useMistakeStore.getState().isRecordModalOpen).toBe(false);
+  });
+
+  it('populates fields and updates mistake when in edit mode', async () => {
+    const existing = {
+      id: 55,
+      subjectId: 'math' as const,
+      topicId: 'math-calc-01',
+      questionRef: 'Original Q-55',
+      whatWentWrong: 'Original wrong explanation',
+      correctSolution: 'Original correct solution',
+      type: 'formula' as const,
+      status: 'unresolved' as const,
+      createdAt: '',
+    };
+
+    useMistakeStore.setState({
+      isRecordModalOpen: true,
+      editingMistake: existing,
+      mistakes: [existing],
+    });
+
+    render(<RecordMistakeModal />);
+
+    expect(screen.getByRole('heading', { name: /Edit Mistake/i })).toBeInTheDocument();
+
+    const questionInput = screen.getByLabelText(/Question Source \/ Reference/i);
+    expect(questionInput).toHaveValue('Original Q-55');
+
+    fireEvent.change(questionInput, { target: { value: 'Updated Q-55' } });
+
+    const updateBtn = screen.getByRole('button', { name: /Update Mistake/i });
+    fireEvent.click(updateBtn);
+
+    await waitFor(() => {
+      const updated = useMistakeStore.getState().mistakes.find((m) => m.id === 55);
+      expect(updated?.questionRef).toBe('Updated Q-55');
+    });
   });
 
   it('shows validation errors when required fields are empty', async () => {

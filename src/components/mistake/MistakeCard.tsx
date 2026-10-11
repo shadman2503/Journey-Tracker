@@ -6,6 +6,7 @@ import {
   formatReviewDate,
 } from '@/domain/mistake';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
+import { useMistakeStore } from '@/stores/useMistakeStore';
 import {
   AlertCircle,
   CheckCircle2,
@@ -15,6 +16,7 @@ import {
   ChevronUp,
   RotateCcw,
   BookOpen,
+  Pencil,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,6 +24,7 @@ import { cn } from '@/lib/utils';
 export interface MistakeCardProps {
   mistake: Mistake;
   onUpdateStatus?: (id: number, status: MistakeStatus) => void;
+  onEdit?: (mistake: Mistake) => void;
   onDelete?: (id: number) => void;
 }
 
@@ -36,8 +39,10 @@ const SUBJECT_NAMES = {
 export const MistakeCard: React.FC<MistakeCardProps> = ({
   mistake,
   onUpdateStatus,
+  onEdit,
   onDelete,
 }) => {
+  const openEditModal = useMistakeStore((s) => s.openEditModal);
   const [topicName, setTopicName] = useState<string>('');
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState<boolean>(false);
@@ -236,6 +241,16 @@ export const MistakeCard: React.FC<MistakeCardProps> = ({
               <span>Reopen</span>
             </Button>
           )}
+
+          {/* Edit Action */}
+          <button
+            type="button"
+            onClick={() => (onEdit ? onEdit(mistake) : openEditModal(mistake))}
+            aria-label="Edit mistake"
+            className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ml-1"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
 
           {/* Delete Action */}
           {isConfirmingDelete ? (

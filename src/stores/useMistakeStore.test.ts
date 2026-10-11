@@ -192,5 +192,45 @@ describe('useMistakeStore', () => {
     expect(metrics.unresolvedCount).toBe(1);
     expect(metrics.resolutionRate).toBe(50.0);
   });
+
+  it('manages editing mistake state and resets on close', () => {
+    const targetMistake: Mistake = {
+      id: 99,
+      subjectId: 'physics',
+      topicId: 'phy-01',
+      questionRef: 'Phy Q-10',
+      whatWentWrong: 'Forgot cos(theta)',
+      correctSolution: 'Work = F * d * cos(theta)',
+      type: 'formula',
+      status: 'unresolved',
+      createdAt: '',
+    };
+
+    const store = useMistakeStore.getState();
+    store.openEditModal(targetMistake);
+
+    let state = useMistakeStore.getState();
+    expect(state.isRecordModalOpen).toBe(true);
+    expect(state.editingMistake).toEqual(targetMistake);
+    expect(state.prefilledSubjectId).toBe('physics');
+    expect(state.prefilledTopicId).toBe('phy-01');
+    expect(state.prefilledQuestionRef).toBe('Phy Q-10');
+
+    state.closeRecordModal();
+    state = useMistakeStore.getState();
+    expect(state.isRecordModalOpen).toBe(false);
+    expect(state.editingMistake).toBeNull();
+  });
+
+  it('manages review session open and close state', () => {
+    const store = useMistakeStore.getState();
+    expect(store.isReviewSessionOpen).toBe(false);
+
+    store.openReviewSession();
+    expect(useMistakeStore.getState().isReviewSessionOpen).toBe(true);
+
+    store.closeReviewSession();
+    expect(useMistakeStore.getState().isReviewSessionOpen).toBe(false);
+  });
 });
 

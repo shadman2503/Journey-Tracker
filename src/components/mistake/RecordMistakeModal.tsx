@@ -35,6 +35,8 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
   const storeIsOpen = useMistakeStore((s) => s.isRecordModalOpen);
   const storeClose = useMistakeStore((s) => s.closeRecordModal);
   const recordMistake = useMistakeStore((s) => s.recordMistake);
+  const updateMistake = useMistakeStore((s) => s.updateMistake);
+  const editingMistake = useMistakeStore((s) => s.editingMistake);
   const prefilledSubjectId = useMistakeStore((s) => s.prefilledSubjectId);
   const prefilledTopicId = useMistakeStore((s) => s.prefilledTopicId);
   const prefilledQuestionRef = useMistakeStore((s) => s.prefilledQuestionRef);
@@ -42,15 +44,17 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
   const handleClose = propOnClose || storeClose;
 
-  // Form states
-  const [subjectId, setSubjectId] = useState<SubjectId>('math');
-  const [topicId, setTopicId] = useState<string>('');
-  const [questionRef, setQuestionRef] = useState<string>('');
-  const [whatWentWrong, setWhatWentWrong] = useState<string>('');
-  const [correctSolution, setCorrectSolution] = useState<string>('');
-  const [type, setType] = useState<MistakeType>('conceptual');
-  const [status, setStatus] = useState<MistakeStatus>('unresolved');
-  const [reviewDate, setReviewDate] = useState<string>(() => getSuggestedReviewDate(3));
+  const isEditing = !!editingMistake;
+
+  // Form states initialized with editingMistake if present
+  const [subjectId, setSubjectId] = useState<SubjectId>(() => editingMistake?.subjectId || prefilledSubjectId || 'math');
+  const [topicId, setTopicId] = useState<string>(() => editingMistake?.topicId || prefilledTopicId || '');
+  const [questionRef, setQuestionRef] = useState<string>(() => editingMistake?.questionRef || prefilledQuestionRef || '');
+  const [whatWentWrong, setWhatWentWrong] = useState<string>(() => editingMistake?.whatWentWrong || '');
+  const [correctSolution, setCorrectSolution] = useState<string>(() => editingMistake?.correctSolution || '');
+  const [type, setType] = useState<MistakeType>(() => editingMistake?.type || 'conceptual');
+  const [status, setStatus] = useState<MistakeStatus>(() => editingMistake?.status || 'unresolved');
+  const [reviewDate, setReviewDate] = useState<string>(() => editingMistake?.reviewDate || getSuggestedReviewDate(3));
 
   // Dynamic topics state
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
@@ -63,30 +67,48 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
   // Reset / Populate on open
   useEffect(() => {
     if (isOpen) {
-      const initialSub = prefilledSubjectId || 'math';
-      setSubjectId(initialSub);
-      setQuestionRef(prefilledQuestionRef || '');
-      setWhatWentWrong('');
-      setCorrectSolution('');
-      setType('conceptual');
-      setStatus('unresolved');
-      setReviewDate(getSuggestedReviewDate(3));
-      setFieldErrors({});
+      if (editingMistake) {
+        setSubjectId(editingMistake.subjectId);
+        setTopicId(editingMistake.topicId);
+        setQuestionRef(editingMistake.questionRef);
+        setWhatWentWrong(editingMistake.whatWentWrong);
+        setCorrectSolution(editingMistake.correctSolution);
+        setType(editingMistake.type);
+        setStatus(editingMistake.status);
+        setReviewDate(editingMistake.reviewDate || '');
+        setFieldErrors({});
 
-      setLoadingTopics(true);
-      syllabusRepository.getTopicsBySubject(initialSub).then((data) => {
-        setTopics(data);
-        setLoadingTopics(false);
-        if (prefilledTopicId && data.some((t) => t.id === prefilledTopicId)) {
-          setTopicId(prefilledTopicId);
-        } else if (data.length > 0) {
-          setTopicId(data[0].id);
-        } else {
-          setTopicId('');
-        }
-      });
+        setLoadingTopics(true);
+        syllabusRepository.getTopicsBySubject(editingMistake.subjectId).then((data) => {
+          setTopics(data);
+          setLoadingTopics(false);
+        });
+      } else {
+        const initialSub = prefilledSubjectId || 'math';
+        setSubjectId(initialSub);
+        setQuestionRef(prefilledQuestionRef || '');
+        setWhatWentWrong('');
+        setCorrectSolution('');
+        setType('conceptual');
+        setStatus('unresolved');
+        setReviewDate(getSuggestedReviewDate(3));
+        setFieldErrors({});
+
+        setLoadingTopics(true);
+        syllabusRepository.getTopicsBySubject(initialSub).then((data) => {
+          setTopics(data);
+          setLoadingTopics(false);
+          if (prefilledTopicId && data.some((t) => t.id === prefilledTopicId)) {
+            setTopicId(prefilledTopicId);
+          } else if (data.length > 0) {
+            setTopicId(data[0].id);
+          } else {
+            setTopicId('');
+          }
+        });
+      }
     }
-  }, [isOpen, prefilledSubjectId, prefilledTopicId, prefilledQuestionRef]);
+  }, [isOpen, editingMistake, prefilledSubjectId, prefilledTopicId, prefilledQuestionRef]);
 
   // Handle subject change
   const handleSubjectChange = (newSub: SubjectId) => {
@@ -141,9 +163,16 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
 
     try {
       setIsSubmitting(true);
-      const newId = await recordMistake(validation.data);
-      if (onSaved) {
-        onSaved(newId);
+      if (editingMistake && editingMistake.id !== undefined) {
+        await updateMistake(editingMistake.id, validation.data);
+        if (onSaved) {
+          onSaved(editingMistake.id);
+        }
+      } else {
+        const newId = await recordMistake(validation.data);
+        if (onSaved) {
+          onSaved(newId);
+        }
       }
       handleClose();
     } catch (err: unknown) {
@@ -173,10 +202,12 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
             </span>
             <div>
               <h2 id={titleId} className="text-lg font-bold text-foreground">
-                Log New Mistake
+                {isEditing ? 'Edit Mistake' : 'Log New Mistake'}
               </h2>
               <p className="text-xs text-muted-foreground">
-                Record problem slips, analyze what went wrong, and set spaced review
+                {isEditing
+                  ? 'Update problem reflection, classification, or review date'
+                  : 'Record problem slips, analyze what went wrong, and set spaced review'}
               </p>
             </div>
           </div>
@@ -393,7 +424,7 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
               className="gap-1.5 shadow-xs"
             >
               <Save className="h-4 w-4" />
-              <span>{isSubmitting ? 'Saving...' : 'Log Mistake'}</span>
+              <span>{isSubmitting ? 'Saving...' : isEditing ? 'Update Mistake' : 'Log Mistake'}</span>
             </Button>
           </div>
         </form>

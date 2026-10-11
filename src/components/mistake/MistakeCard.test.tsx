@@ -47,6 +47,16 @@ describe('MistakeCard', () => {
     expect(onUpdateStatus).toHaveBeenCalledWith(1, 'fixed');
   });
 
+  it('calls onEdit when edit button is clicked', () => {
+    const onEdit = vi.fn();
+    render(<MistakeCard mistake={dummyMistake} onEdit={onEdit} />);
+
+    const editBtn = screen.getByLabelText(/Edit mistake/i);
+    fireEvent.click(editBtn);
+
+    expect(onEdit).toHaveBeenCalledWith(dummyMistake);
+  });
+
   it('shows delete confirmation and triggers onDelete', () => {
     const onDelete = vi.fn();
     render(<MistakeCard mistake={dummyMistake} onDelete={onDelete} />);
