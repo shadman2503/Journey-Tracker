@@ -5,6 +5,9 @@ import {
   calculateMockAccuracy,
   calculateMockPercentage,
   calculateMockTestMetrics,
+  filterMockTests,
+  compareMockTests,
+  getPreviousTestDelta,
 } from './mockTest';
 import type { MockTest } from './types';
 
@@ -189,4 +192,199 @@ describe('calculateMockTestMetrics', () => {
     expect(summary.totalTimeSpentFormatted).toBe('3.5 hrs');
   });
 });
+
+describe('filterMockTests', () => {
+  const sampleTests: MockTest[] = [
+    {
+      id: 1,
+      testName: 'DUET Full Model Test 1',
+      date: '2026-10-01',
+      subjectId: undefined, // Full Syllabus
+      totalQuestions: 100,
+      correctAnswers: 60,
+      wrongAnswers: 20,
+      score: 55,
+      accuracy: 75,
+      timeTakenMinutes: 120,
+      notes: 'Initial baseline',
+      createdAt: '',
+    },
+    {
+      id: 2,
+      testName: 'Math Sectional Test 1',
+      date: '2026-10-05',
+      subjectId: 'math',
+      totalQuestions: 30,
+      correctAnswers: 25,
+      wrongAnswers: 4,
+      score: 24,
+      accuracy: 86.2,
+      timeTakenMinutes: 45,
+      notes: 'Calculus and Algebra',
+      createdAt: '',
+    },
+    {
+      id: 3,
+      testName: 'Physics Sectional Test 1',
+      date: '2026-10-07',
+      subjectId: 'physics',
+      totalQuestions: 30,
+      correctAnswers: 20,
+      wrongAnswers: 8,
+      score: 18,
+      accuracy: 71.4,
+      timeTakenMinutes: 40,
+      notes: 'Mechanics needs work',
+      createdAt: '',
+    },
+    {
+      id: 4,
+      testName: 'DUET Full Model Test 2',
+      date: '2026-10-10',
+      subjectId: undefined, // Full Syllabus
+      totalQuestions: 100,
+      correctAnswers: 75,
+      wrongAnswers: 12,
+      score: 72,
+      accuracy: 86.2,
+      timeTakenMinutes: 110,
+      notes: 'Improved math speed',
+      createdAt: '',
+    },
+  ];
+
+  it('filters by scope: all returns all tests', () => {
+    const result = filterMockTests(sampleTests, { scope: 'all' });
+    expect(result.length).toBe(4);
+  });
+
+  it('filters by scope: full returns only full syllabus tests (subjectId undefined)', () => {
+    const result = filterMockTests(sampleTests, { scope: 'full' });
+    expect(result.length).toBe(2);
+    expect(result.every((t) => t.subjectId === undefined)).toBe(true);
+  });
+
+  it('filters by scope: specific subject returns matching tests', () => {
+    const result = filterMockTests(sampleTests, { scope: 'math' });
+    expect(result.length).toBe(1);
+    expect(result[0].testName).toBe('Math Sectional Test 1');
+  });
+
+  it('filters by search query matching name or notes case-insensitively', () => {
+    const nameMatch = filterMockTests(sampleTests, { searchQuery: 'physics' });
+    expect(nameMatch.length).toBe(1);
+    expect(nameMatch[0].id).toBe(3);
+
+    const notesMatch = filterMockTests(sampleTests, { searchQuery: 'baseline' });
+    expect(notesMatch.length).toBe(1);
+    expect(notesMatch[0].id).toBe(1);
+  });
+
+  it('sorts correctly across different sort options', () => {
+    // date-desc (default)
+    const dateDesc = filterMockTests(sampleTests, { sortBy: 'date-desc' });
+    expect(dateDesc[0].id).toBe(4); // 2026-10-10
+    expect(dateDesc[3].id).toBe(1); // 2026-10-01
+
+    // date-asc
+    const dateAsc = filterMockTests(sampleTests, { sortBy: 'date-asc' });
+    expect(dateAsc[0].id).toBe(1); // 2026-10-01
+
+    // score-desc
+    const scoreDesc = filterMockTests(sampleTests, { sortBy: 'score-desc' });
+    expect(scoreDesc[0].score).toBe(72);
+
+    // score-asc
+    const scoreAsc = filterMockTests(sampleTests, { sortBy: 'score-asc' });
+    expect(scoreAsc[0].score).toBe(18);
+
+    // accuracy-desc
+    const accuracyDesc = filterMockTests(sampleTests, { sortBy: 'accuracy-desc' });
+    expect(accuracyDesc[0].accuracy).toBe(86.2);
+  });
+});
+
+describe('compareMockTests', () => {
+  it('calculates numerical deltas between testA and testB', () => {
+    const testA: MockTest = {
+      id: 2,
+      testName: 'Mock 2',
+      date: '2026-10-10',
+      totalQuestions: 100,
+      correctAnswers: 80,
+      wrongAnswers: 12,
+      score: 77,
+      accuracy: 87,
+      timeTakenMinutes: 110,
+      createdAt: '',
+    };
+
+    const testB: MockTest = {
+      id: 1,
+      testName: 'Mock 1',
+      date: '2026-10-01',
+      totalQuestions: 100,
+      correctAnswers: 70,
+      wrongAnswers: 20,
+      score: 65,
+      accuracy: 77.8,
+      timeTakenMinutes: 120,
+      createdAt: '',
+    };
+
+    const comparison = compareMockTests(testA, testB);
+    expect(comparison.testA).toBe(testA);
+    expect(comparison.testB).toBe(testB);
+    expect(comparison.scoreDelta).toBe(12); // 77 - 65
+    expect(comparison.accuracyDelta).toBe(9.2); // 87 - 77.8
+    expect(comparison.correctDelta).toBe(10); // 80 - 70
+    expect(comparison.wrongDelta).toBe(-8); // 12 - 20 (fewer mistakes)
+    expect(comparison.timeDeltaMinutes).toBe(-10); // 110 - 120 (10 minutes faster)
+  });
+});
+
+describe('getPreviousTestDelta', () => {
+  const tests: MockTest[] = [
+    {
+      id: 1,
+      testName: 'Full Mock 1',
+      date: '2026-10-01',
+      totalQuestions: 100,
+      correctAnswers: 60,
+      wrongAnswers: 20,
+      score: 55,
+      accuracy: 75,
+      timeTakenMinutes: 120,
+      createdAt: '',
+    },
+    {
+      id: 2,
+      testName: 'Full Mock 2',
+      date: '2026-10-08',
+      totalQuestions: 100,
+      correctAnswers: 72,
+      wrongAnswers: 16,
+      score: 68,
+      accuracy: 81.8,
+      timeTakenMinutes: 115,
+      createdAt: '',
+    },
+  ];
+
+  it('returns null when test is the oldest test', () => {
+    expect(getPreviousTestDelta(tests[0], tests)).toBeNull();
+  });
+
+  it('returns null when total tests is less than 2', () => {
+    expect(getPreviousTestDelta(tests[0], [tests[0]])).toBeNull();
+  });
+
+  it('calculates score and accuracy delta compared to the previous test', () => {
+    const delta = getPreviousTestDelta(tests[1], tests);
+    expect(delta).not.toBeNull();
+    expect(delta?.scoreDelta).toBe(13); // 68 - 55 = +13
+    expect(delta?.accuracyDelta).toBe(6.8); // 81.8 - 75.0 = +6.8
+  });
+});
+
 

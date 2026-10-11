@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { MockTest } from './types';
+import type { MockTest, SubjectId } from './types';
 
 export const createMockTestSchema = z
   .object({
@@ -146,6 +146,126 @@ export function calculateMockTestMetrics(
     totalQuestionsAttempted,
     totalTimeSpentMinutes,
     totalTimeSpentFormatted,
+  };
+}
+
+export type MockTestScopeFilter = 'all' | 'full' | SubjectId;
+
+export type MockTestSortOption =
+  | 'date-desc'
+  | 'date-asc'
+  | 'score-desc'
+  | 'score-asc'
+  | 'accuracy-desc';
+
+export interface FilterMockTestsOptions {
+  scope?: MockTestScopeFilter;
+  searchQuery?: string;
+  sortBy?: MockTestSortOption;
+}
+
+export interface MockTestComparisonResult {
+  testA: MockTest;
+  testB: MockTest;
+  scoreDelta: number;
+  accuracyDelta: number;
+  correctDelta: number;
+  wrongDelta: number;
+  timeDeltaMinutes: number;
+}
+
+/**
+ * Filters and sorts mock tests based on scope, search query, and sort order.
+ */
+export function filterMockTests(
+  tests: MockTest[],
+  options: FilterMockTestsOptions = {},
+): MockTest[] {
+  const { scope = 'all', searchQuery = '', sortBy = 'date-desc' } = options;
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filtered = tests.filter((test) => {
+    // Scope filter
+    if (scope === 'full') {
+      if (test.subjectId !== undefined) return false;
+    } else if (scope !== 'all') {
+      if (test.subjectId !== scope) return false;
+    }
+
+    // Search query filter
+    if (normalizedQuery) {
+      const matchName = test.testName.toLowerCase().includes(normalizedQuery);
+      const matchNotes = test.notes?.toLowerCase().includes(normalizedQuery);
+      if (!matchName && !matchNotes) return false;
+    }
+
+    return true;
+  });
+
+  // Sorting
+  return [...filtered].sort((a, b) => {
+    switch (sortBy) {
+      case 'date-desc':
+        return new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id ?? 0) - (a.id ?? 0);
+      case 'date-asc':
+        return new Date(a.date).getTime() - new Date(b.date).getTime() || (a.id ?? 0) - (b.id ?? 0);
+      case 'score-desc':
+        return b.score - a.score;
+      case 'score-asc':
+        return a.score - b.score;
+      case 'accuracy-desc':
+        return b.accuracy - a.accuracy;
+      default:
+        return 0;
+    }
+  });
+}
+
+/**
+ * Computes direct metric differences between two tests (testA minus testB).
+ */
+export function compareMockTests(
+  testA: MockTest,
+  testB: MockTest,
+): MockTestComparisonResult {
+  return {
+    testA,
+    testB,
+    scoreDelta: Math.round((testA.score - testB.score) * 100) / 100,
+    accuracyDelta: Math.round((testA.accuracy - testB.accuracy) * 10) / 10,
+    correctDelta: testA.correctAnswers - testB.correctAnswers,
+    wrongDelta: testA.wrongAnswers - testB.wrongAnswers,
+    timeDeltaMinutes: testA.timeTakenMinutes - testB.timeTakenMinutes,
+  };
+}
+
+/**
+ * Finds the immediately preceding chronological test with matching scope
+ * and calculates the score and accuracy deltas relative to it.
+ */
+export function getPreviousTestDelta(
+  currentTest: MockTest,
+  allTests: MockTest[],
+): { scoreDelta: number; accuracyDelta: number } | null {
+  if (!allTests || allTests.length < 2) return null;
+
+  // Filter to tests with matching scope (or all tests if none match scope)
+  const sameScopeTests = allTests.filter(
+    (t) => t.subjectId === currentTest.subjectId,
+  );
+
+  // Chronologically sort tests oldest to newest
+  const sorted = [...(sameScopeTests.length >= 2 ? sameScopeTests : allTests)].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || (a.id ?? 0) - (b.id ?? 0),
+  );
+
+  const currentIndex = sorted.findIndex((t) => t.id === currentTest.id);
+  if (currentIndex <= 0) return null;
+
+  const prev = sorted[currentIndex - 1];
+  return {
+    scoreDelta: Math.round((currentTest.score - prev.score) * 100) / 100,
+    accuracyDelta: Math.round((currentTest.accuracy - prev.accuracy) * 10) / 10,
   };
 }
 
