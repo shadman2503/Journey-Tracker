@@ -6,6 +6,7 @@ import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { useMockTestStore } from '@/stores/useMockTestStore';
+import { useMistakeStore } from '@/stores/useMistakeStore';
 
 vi.mock('@/repositories/dexie', () => ({
   topicProgressRepo: {
@@ -20,6 +21,12 @@ vi.mock('@/repositories/dexie', () => ({
   mockTestRepo: {
     getAll: vi.fn().mockResolvedValue([]),
     add: vi.fn().mockResolvedValue(1),
+    delete: vi.fn().mockResolvedValue(undefined),
+  },
+  mistakeRepo: {
+    getAll: vi.fn().mockResolvedValue([]),
+    add: vi.fn().mockResolvedValue(1),
+    update: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn().mockResolvedValue(undefined),
   },
 }));
@@ -45,6 +52,11 @@ describe('DashboardPage', () => {
       loaded: true,
       isLoading: false,
       isRecordModalOpen: false,
+    });
+    useMistakeStore.setState({
+      mistakes: [],
+      loaded: true,
+      isLoading: false,
     });
   });
 
@@ -274,5 +286,86 @@ describe('DashboardPage', () => {
       expect(screen.getByTestId('study-streak-card')).toBeInTheDocument();
     });
   });
+
+  it('renders weak area spotlight widget empty state when no weak areas exist', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Weak Area Radar')).toBeInTheDocument();
+      expect(screen.getByText('All Clear')).toBeInTheDocument();
+      expect(screen.getByText('No Weak Areas Detected')).toBeInTheDocument();
+    });
+  });
+
+  it('renders weak area spotlight with flagged topics and handles practice and radar dialog workflows', async () => {
+    useTopicProgressStore.setState({
+      progressMap: {
+        'math-alg-complex': {
+          topicId: 'math-alg-complex',
+          status: 'needs_revision',
+          updatedAt: '2026-08-01T00:00:00.000Z',
+        },
+      },
+      loaded: true,
+      isLoading: false,
+    });
+
+    useMistakeStore.setState({
+      mistakes: [
+        {
+          id: 1,
+          subjectId: 'math',
+          topicId: 'math-alg-complex',
+          questionRef: 'DUET 2024 Math Q-10',
+          whatWentWrong: 'Sign mistake in polar form',
+          correctSolution: 'Use r(cos theta + i sin theta)',
+          type: 'calculation',
+          status: 'unresolved',
+          reviewDate: '2026-08-15',
+          createdAt: '2026-08-01T00:00:00.000Z',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    // Wait for topic to be detected as weak area and rendered in spotlight
+    await waitFor(() => {
+      expect(screen.getAllByText(/Complex Numbers/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/View Full Radar/i)).toBeInTheDocument();
+    });
+
+    // Test clicking Practice Topic pre-fills session modal
+    const practiceBtn = screen.getByRole('button', { name: /Practice Topic/i });
+    fireEvent.click(practiceBtn);
+
+    const sessionState = useStudySessionStore.getState();
+    expect(sessionState.isRecordModalOpen).toBe(true);
+    expect(sessionState.prefilledSubjectId).toBe('math');
+    expect(sessionState.prefilledTopicId).toBe('math-alg-complex');
+
+    // Test opening the full radar modal dialog
+    const viewRadarBtn = screen.getByRole('button', { name: /View Full Radar/i });
+    fireEvent.click(viewRadarBtn);
+
+    expect(screen.getByText('Weak Area Diagnostic Radar')).toBeInTheDocument();
+
+    // Close the radar dialog
+    const closeDialogBtn = screen.getByLabelText(/Close radar dialog/i);
+    fireEvent.click(closeDialogBtn);
+
+    expect(screen.queryByText('Weak Area Diagnostic Radar')).not.toBeInTheDocument();
+  });
 });
+
 

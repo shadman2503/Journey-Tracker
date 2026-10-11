@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Compass, BookCheck, Clock, Plus, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Compass, BookCheck, Clock, Plus, Award, Target, X } from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { useMockTestStore } from '@/stores/useMockTestStore';
+import { useMistakeStore } from '@/stores/useMistakeStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
-import type { SyllabusTopic } from '@/domain/types';
+import type { SyllabusTopic, SubjectId } from '@/domain/types';
 import { calculateOverallProgress } from '@/domain/calculations';
 import { calculateStudyMetrics } from '@/domain/studySession';
 import { calculateStreak } from '@/domain/streak';
+import { detectWeakAreas } from '@/domain/weakArea';
 import { CountdownBanner } from '@/components/dashboard/CountdownBanner';
 import { OverallProgressCard } from '@/components/dashboard/OverallProgressCard';
 import { SubjectProgressGrid } from '@/components/dashboard/SubjectProgressGrid';
@@ -15,10 +18,15 @@ import { StudyStreakCard } from '@/components/dashboard/StudyStreakCard';
 import { ActivityHeatmap } from '@/components/study/ActivityHeatmap';
 import { RecordSessionModal } from '@/components/study/RecordSessionModal';
 import { RecordMockTestModal } from '@/components/mock/RecordMockTestModal';
+import { WeakAreaDashboardWidget } from '@/components/weakArea/WeakAreaDashboardWidget';
+import { WeakAreaRadar } from '@/components/weakArea/WeakAreaRadar';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
+  const [isRadarModalOpen, setIsRadarModalOpen] = useState<boolean>(false);
+
   const loadProgress = useTopicProgressStore((state) => state.loadProgress);
   const progressMap = useTopicProgressStore((state) => state.progressMap);
   const loadSessions = useStudySessionStore((state) => state.loadSessions);
@@ -26,15 +34,18 @@ export const DashboardPage: React.FC = () => {
   const openRecordModal = useStudySessionStore((state) => state.openRecordModal);
   const loadMockTests = useMockTestStore((state) => state.loadMockTests);
   const openMockModal = useMockTestStore((state) => state.openRecordModal);
+  const loadMistakes = useMistakeStore((state) => state.loadMistakes);
+  const mistakes = useMistakeStore((state) => state.mistakes);
 
   useEffect(() => {
     loadProgress();
     loadSessions();
     loadMockTests();
+    loadMistakes();
     syllabusRepository.getAllTopics().then((data) => {
       setTopics(data);
     });
-  }, [loadProgress, loadSessions, loadMockTests]);
+  }, [loadProgress, loadSessions, loadMockTests, loadMistakes]);
 
   const overallSummary = useMemo(() => {
     return calculateOverallProgress(topics, progressMap);
@@ -47,6 +58,20 @@ export const DashboardPage: React.FC = () => {
   const streakSummary = useMemo(() => {
     return calculateStreak(sessions.map((s) => s.date));
   }, [sessions]);
+
+  const weakAreas = useMemo(() => {
+    return detectWeakAreas(topics, progressMap, sessions, mistakes, new Date(), 20);
+  }, [topics, progressMap, sessions, mistakes]);
+
+  const handlePracticeTopic = (subjectId: SubjectId, topicId: string) => {
+    setIsRadarModalOpen(false);
+    openRecordModal({ subjectId, topicId });
+  };
+
+  const handleViewMistakes = () => {
+    setIsRadarModalOpen(false);
+    navigate('/mistakes');
+  };
 
   return (
     <div className="space-y-8">
@@ -148,8 +173,62 @@ export const DashboardPage: React.FC = () => {
         <SubjectProgressGrid subjects={overallSummary.subjects} />
       </div>
 
+      {/* Weak Area Detection Radar Spotlight */}
+      <WeakAreaDashboardWidget
+        weakAreas={weakAreas}
+        onViewRadar={() => setIsRadarModalOpen(true)}
+        onPracticeTopic={handlePracticeTopic}
+        onViewMistakes={handleViewMistakes}
+      />
+
       {/* Study Activity & Consistency Heatmap */}
       <ActivityHeatmap sessions={sessions} />
+
+      {/* Full Weak Area Radar Dialog Modal */}
+      {isRadarModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Weak Area Radar Dialog"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
+        >
+          <div className="relative w-full max-w-4xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b">
+              <div className="flex items-center gap-2.5">
+                <span className="p-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                  <Target className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">
+                    Weak Area Diagnostic Radar
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Multi-signal weakness analysis prioritizing topics by practice accuracy, mistakes, and revision decay
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRadarModalOpen(false)}
+                aria-label="Close radar dialog"
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Radar Body */}
+            <div className="py-4">
+              <WeakAreaRadar
+                weakAreas={weakAreas}
+                onPracticeTopic={handlePracticeTopic}
+                onViewMistakes={handleViewMistakes}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Record Study Session Modal */}
       <RecordSessionModal />
