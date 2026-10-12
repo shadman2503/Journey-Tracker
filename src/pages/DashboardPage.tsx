@@ -43,6 +43,7 @@ import { RecordMistakeModal } from '@/components/mistake/RecordMistakeModal';
 import { MistakeReviewModal } from '@/components/mistake/MistakeReviewModal';
 import { DataBackupModal } from '@/components/backup/DataBackupModal';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -218,54 +219,95 @@ export const DashboardPage: React.FC = () => {
 
       {/* Top Level Metric Cards */}
       <div className='grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
-        <div className='rounded-xl border bg-card p-6 shadow-sm'>
-          <div className='flex items-center justify-between pb-2'>
-            <span className='text-sm font-medium text-muted-foreground'>
-              Overall Completion
-            </span>
-            <Compass className='h-4 w-4 text-primary' />
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-sm flex flex-col justify-between transition-all'>
+          <div>
+            <div className='flex items-center justify-between pb-2'>
+              <span className='text-sm font-medium text-muted-foreground'>
+                Overall Completion
+              </span>
+              <Compass className='h-4 w-4 text-primary' />
+            </div>
+            <div className='text-2xl font-bold tracking-tight'>{overallSummary.percentage}%</div>
+            <p className='text-xs text-muted-foreground mt-1 line-clamp-1'>
+              {overallSummary.completedTopics} of {overallSummary.totalTopics}{' '}
+              topics mastered
+            </p>
           </div>
-          <div className='text-2xl font-bold'>{overallSummary.percentage}%</div>
-          <p className='text-xs text-muted-foreground mt-1'>
-            {overallSummary.completedTopics} of {overallSummary.totalTopics}{' '}
-            topics mastered
-          </p>
+
+          <div className='mt-3 pt-2.5 border-t border-border/50'>
+            <div className='flex items-center justify-between text-[11px] text-muted-foreground mb-1.5'>
+              <span className='font-medium'>Mastery Progress</span>
+              <span className='text-[10px]'>
+                {overallSummary.totalTopics - overallSummary.completedTopics} remaining
+              </span>
+            </div>
+            <Progress value={overallSummary.percentage} className='h-1.5' />
+          </div>
         </div>
 
         <StudyStreakCard summary={streakSummary} />
 
-        <div className='rounded-xl border bg-card p-6 shadow-sm'>
-          <div className='flex items-center justify-between pb-2'>
-            <span className='text-sm font-medium text-muted-foreground'>
-              Questions Solved
-            </span>
-            <BookCheck className='h-4 w-4 text-green-500' />
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-sm flex flex-col justify-between transition-all'>
+          <div>
+            <div className='flex items-center justify-between pb-2'>
+              <span className='text-sm font-medium text-muted-foreground'>
+                Questions Solved
+              </span>
+              <BookCheck className='h-4 w-4 text-emerald-500' />
+            </div>
+            <div className='text-2xl font-bold tracking-tight'>
+              {studyMetrics.totalQuestionsSolved}
+            </div>
+            <p className='text-xs text-muted-foreground mt-1 line-clamp-1'>
+              {studyMetrics.totalQuestionsSolved > 0
+                ? `${studyMetrics.overallAccuracy}% practice accuracy`
+                : 'Practice problem count'}
+            </p>
           </div>
-          <div className='text-2xl font-bold'>
-            {studyMetrics.totalQuestionsSolved}
+
+          <div className='mt-3 pt-2.5 border-t border-border/50'>
+            <div className='flex items-center justify-between text-[11px] text-muted-foreground mb-1.5'>
+              <span className='font-medium'>Practice Accuracy</span>
+              <span className='text-[10px]'>{studyMetrics.overallAccuracy}%</span>
+            </div>
+            <Progress value={studyMetrics.overallAccuracy} className='h-1.5' />
           </div>
-          <p className='text-xs text-muted-foreground mt-1'>
-            {studyMetrics.totalQuestionsSolved > 0
-              ? `${studyMetrics.overallAccuracy}% practice accuracy`
-              : 'Practice problem count'}
-          </p>
         </div>
 
-        <div className='rounded-xl border bg-card p-6 shadow-sm'>
-          <div className='flex items-center justify-between pb-2'>
-            <span className='text-sm font-medium text-muted-foreground'>
-              Study Time
-            </span>
-            <Clock className='h-4 w-4 text-blue-500' />
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-sm flex flex-col justify-between transition-all'>
+          <div>
+            <div className='flex items-center justify-between pb-2'>
+              <span className='text-sm font-medium text-muted-foreground'>
+                Study Time
+              </span>
+              <Clock className='h-4 w-4 text-sky-500' />
+            </div>
+            <div className='text-2xl font-bold tracking-tight'>
+              {studyMetrics.totalHoursFormatted}
+            </div>
+            <p className='text-xs text-muted-foreground mt-1 line-clamp-1'>
+              {studyMetrics.sessionCount > 0
+                ? `${studyMetrics.sessionCount} recorded ${studyMetrics.sessionCount === 1 ? 'session' : 'sessions'}`
+                : 'Total recorded sessions'}
+            </p>
           </div>
-          <div className='text-2xl font-bold'>
-            {studyMetrics.totalHoursFormatted}
+
+          <div className='mt-3 pt-2.5 border-t border-border/50'>
+            <div className='flex items-center justify-between text-[11px] text-muted-foreground mb-1.5'>
+              <span className='font-medium'>Session History</span>
+              <span className='text-[10px]'>{studyMetrics.sessionCount} logged</span>
+            </div>
+            <div className='flex items-center gap-1.5 text-xs text-muted-foreground h-1.5'>
+              <div className='h-1.5 w-full bg-secondary rounded-full overflow-hidden'>
+                <div
+                  className='h-full bg-sky-500 transition-all rounded-full'
+                  style={{
+                    width: `${Math.min(100, Math.round((studyMetrics.sessionCount / 30) * 100))}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
-          <p className='text-xs text-muted-foreground mt-1'>
-            {studyMetrics.sessionCount > 0
-              ? `${studyMetrics.sessionCount} recorded ${studyMetrics.sessionCount === 1 ? 'session' : 'sessions'}`
-              : 'Total recorded sessions'}
-          </p>
         </div>
       </div>
 

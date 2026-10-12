@@ -11,15 +11,45 @@ describe('StudyStreakCard', () => {
     lastStudiedDate: null,
     totalActiveDays: 0,
     recentDays: [
-      { date: '2026-10-04', dayLabel: 'Sun', isToday: false, hasStudied: false },
-      { date: '2026-10-05', dayLabel: 'Mon', isToday: false, hasStudied: false },
-      { date: '2026-10-06', dayLabel: 'Tue', isToday: false, hasStudied: false },
-      { date: '2026-10-07', dayLabel: 'Wed', isToday: false, hasStudied: false },
-      { date: '2026-10-08', dayLabel: 'Thu', isToday: false, hasStudied: false },
-      { date: '2026-10-09', dayLabel: 'Fri', isToday: false, hasStudied: false },
+      {
+        date: '2026-10-04',
+        dayLabel: 'Sun',
+        isToday: false,
+        hasStudied: false,
+      },
+      {
+        date: '2026-10-05',
+        dayLabel: 'Mon',
+        isToday: false,
+        hasStudied: false,
+      },
+      {
+        date: '2026-10-06',
+        dayLabel: 'Tue',
+        isToday: false,
+        hasStudied: false,
+      },
+      {
+        date: '2026-10-07',
+        dayLabel: 'Wed',
+        isToday: false,
+        hasStudied: false,
+      },
+      {
+        date: '2026-10-08',
+        dayLabel: 'Thu',
+        isToday: false,
+        hasStudied: false,
+      },
+      {
+        date: '2026-10-09',
+        dayLabel: 'Fri',
+        isToday: false,
+        hasStudied: false,
+      },
       { date: '2026-10-10', dayLabel: 'Sat', isToday: true, hasStudied: false },
     ],
-    message: 'Start your study streak today. Consistency is key!',
+    message: 'Consistency is key!',
   };
 
   it('renders inactive streak state correctly', () => {
@@ -28,7 +58,7 @@ describe('StudyStreakCard', () => {
     expect(screen.getByText('Current Streak')).toBeInTheDocument();
     expect(screen.getByText('0 days')).toBeInTheDocument();
     expect(screen.getByText('Start Streak')).toBeInTheDocument();
-    expect(screen.getByText('Start your study streak today. Consistency is key!')).toBeInTheDocument();
+    expect(screen.getByText('Consistency is key!')).toBeInTheDocument();
     expect(screen.queryByText(/Best:/)).not.toBeInTheDocument();
   });
 
@@ -47,7 +77,9 @@ describe('StudyStreakCard', () => {
     expect(screen.getByText('5 days')).toBeInTheDocument();
     expect(screen.getByText('Streak Active')).toBeInTheDocument();
     expect(screen.getByText('Best: 7d')).toBeInTheDocument();
-    expect(screen.getByText('5-day streak! Keep the flame burning 🔥')).toBeInTheDocument();
+    expect(
+      screen.getByText('5-day streak! Keep the flame burning 🔥'),
+    ).toBeInTheDocument();
     expect(screen.getByText('12 active days')).toBeInTheDocument();
   });
 
@@ -64,7 +96,11 @@ describe('StudyStreakCard', () => {
 
     expect(screen.getByText('3 days')).toBeInTheDocument();
     expect(screen.getByText('Study Today!')).toBeInTheDocument();
-    expect(screen.getByText('3-day streak at risk! Study today to keep the flame alive ⏳')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        '3-day streak at risk! Study today to keep the flame alive ⏳',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders 7-day consistency glance with studied indicators', () => {
@@ -74,21 +110,60 @@ describe('StudyStreakCard', () => {
       bestStreak: 1,
       status: 'active',
       recentDays: [
-        { date: '2026-10-04', dayLabel: 'Sun', isToday: false, hasStudied: false },
-        { date: '2026-10-05', dayLabel: 'Mon', isToday: false, hasStudied: false },
-        { date: '2026-10-06', dayLabel: 'Tue', isToday: false, hasStudied: true },
-        { date: '2026-10-07', dayLabel: 'Wed', isToday: false, hasStudied: false },
-        { date: '2026-10-08', dayLabel: 'Thu', isToday: false, hasStudied: true },
-        { date: '2026-10-09', dayLabel: 'Fri', isToday: false, hasStudied: false },
-        { date: '2026-10-10', dayLabel: 'Sat', isToday: true, hasStudied: true },
+        {
+          date: '2026-10-04',
+          dayLabel: 'Sun',
+          isToday: false,
+          hasStudied: false,
+        },
+        {
+          date: '2026-10-05',
+          dayLabel: 'Mon',
+          isToday: false,
+          hasStudied: false,
+        },
+        {
+          date: '2026-10-06',
+          dayLabel: 'Tue',
+          isToday: false,
+          hasStudied: true,
+        },
+        {
+          date: '2026-10-07',
+          dayLabel: 'Wed',
+          isToday: false,
+          hasStudied: false,
+        },
+        {
+          date: '2026-10-08',
+          dayLabel: 'Thu',
+          isToday: false,
+          hasStudied: true,
+        },
+        {
+          date: '2026-10-09',
+          dayLabel: 'Fri',
+          isToday: false,
+          hasStudied: false,
+        },
+        {
+          date: '2026-10-10',
+          dayLabel: 'Sat',
+          isToday: true,
+          hasStudied: true,
+        },
       ],
     };
 
     render(<StudyStreakCard summary={summaryWithActivity} />);
 
     expect(screen.getByTestId('recent-days-glance')).toBeInTheDocument();
-    expect(screen.getByLabelText('Sat 2026-10-10: Studied')).toBeInTheDocument();
-    expect(screen.getByLabelText('Fri 2026-10-09: No study')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Sat 2026-10-10: Studied'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Fri 2026-10-09: No study'),
+    ).toBeInTheDocument();
   });
 
   it('hides recent days glance when showRecentDays is false', () => {
@@ -97,4 +172,3 @@ describe('StudyStreakCard', () => {
     expect(screen.queryByTestId('recent-days-glance')).not.toBeInTheDocument();
   });
 });
-

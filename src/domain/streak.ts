@@ -37,7 +37,8 @@ export function normalizeDateString(dateInput: string | Date): string {
     return dateInput;
   }
   try {
-    const parsed = typeof dateInput === 'string' ? parseISO(dateInput) : dateInput;
+    const parsed =
+      typeof dateInput === 'string' ? parseISO(dateInput) : dateInput;
     return format(parsed, 'yyyy-MM-dd');
   } catch {
     return String(dateInput).slice(0, 10);
@@ -53,15 +54,11 @@ export function getRecentDaysStatus(
   dayCount: number = 7,
 ): RecentDayStatus[] {
   const refDate =
-    typeof referenceDate === 'string'
-      ? parseISO(referenceDate)
-      : referenceDate;
+    typeof referenceDate === 'string' ? parseISO(referenceDate) : referenceDate;
   const normalizedRef = startOfDay(refDate);
 
   const activeDatesSet = new Set(
-    sessionDates
-      .filter(Boolean)
-      .map((d) => normalizeDateString(d)),
+    sessionDates.filter(Boolean).map((d) => normalizeDateString(d)),
   );
 
   const result: RecentDayStatus[] = [];
@@ -106,23 +103,17 @@ export function calculateStreak(
       lastStudiedDate: null,
       totalActiveDays: 0,
       recentDays,
-      message: 'Start your study streak today. Consistency is key!',
+      message: 'Consistency is key!',
     };
   }
 
   const refDate =
-    typeof referenceDate === 'string'
-      ? parseISO(referenceDate)
-      : referenceDate;
+    typeof referenceDate === 'string' ? parseISO(referenceDate) : referenceDate;
   const normalizedRef = startOfDay(refDate);
 
   // Deduplicate and filter valid dates
   const uniqueDateStrings = Array.from(
-    new Set(
-      sessionDates
-        .filter(Boolean)
-        .map((d) => normalizeDateString(d)),
-    ),
+    new Set(sessionDates.filter(Boolean).map((d) => normalizeDateString(d))),
   ).sort();
 
   if (uniqueDateStrings.length === 0) {
@@ -133,7 +124,7 @@ export function calculateStreak(
       lastStudiedDate: null,
       totalActiveDays: 0,
       recentDays,
-      message: 'Start your study streak today. Consistency is key!',
+      message: 'Consistency is key!',
     };
   }
 
@@ -165,7 +156,10 @@ export function calculateStreak(
   // Calculate current streak relative to reference date
   const lastActiveDateStr = uniqueDateStrings[uniqueDateStrings.length - 1];
   const lastActiveDate = startOfDay(parseISO(lastActiveDateStr));
-  const daysSinceLastStudy = differenceInCalendarDays(normalizedRef, lastActiveDate);
+  const daysSinceLastStudy = differenceInCalendarDays(
+    normalizedRef,
+    lastActiveDate,
+  );
 
   let currentStreak = 0;
   let status: StreakStatus = 'inactive';
@@ -213,7 +207,7 @@ export function calculateStreak(
       message = `${currentStreak}-day streak at risk! Study today to keep the flame alive ⏳`;
     }
   } else {
-    message = 'Start your study streak today. Consistency is key!';
+    message = 'Consistency is key!';
   }
 
   return {
@@ -226,4 +220,3 @@ export function calculateStreak(
     message,
   };
 }
-

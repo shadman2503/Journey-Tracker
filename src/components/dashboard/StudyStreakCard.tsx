@@ -44,7 +44,7 @@ export const StudyStreakCard: React.FC<StudyStreakCardProps> = ({
   return (
     <div
       className={cn(
-        'rounded-xl border bg-card p-6 shadow-sm flex flex-col justify-between transition-all',
+        'rounded-xl border bg-card p-4 sm:p-5 shadow-sm flex flex-col justify-between transition-all',
         status === 'at_risk' && 'border-amber-500/30',
         status === 'active' && 'border-orange-500/20',
         className,
@@ -98,7 +98,7 @@ export const StudyStreakCard: React.FC<StudyStreakCardProps> = ({
 
       {/* 7-Day Consistency Glance */}
       {showRecentDays && recentDays && recentDays.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-border/50">
+        <div className="mt-3 pt-2.5 border-t border-border/50">
           <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
             <span className="font-medium">7-Day Consistency</span>
             <span className="text-[10px]">{totalActiveDays} active {totalActiveDays === 1 ? 'day' : 'days'}</span>

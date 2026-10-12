@@ -64,7 +64,7 @@ describe('calculateStreak', () => {
     expect(result.lastStudiedDate).toBeNull();
     expect(result.totalActiveDays).toBe(0);
     expect(result.recentDays).toHaveLength(7);
-    expect(result.message).toContain('Start your study streak today');
+    expect(result.message).toContain('Consistency is key!');
   });
 
   it('calculates active 1-day streak when user studied today only', () => {
