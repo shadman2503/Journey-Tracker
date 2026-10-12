@@ -31,6 +31,7 @@ import {
   clearAllLocalData,
   type ImportResult,
 } from '@/services/backupService';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 export interface DataBackupModalProps {
   isOpen: boolean;
@@ -65,6 +66,13 @@ export const DataBackupModal: React.FC<DataBackupModalProps> = ({
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+  });
 
   // Reset state
   const [resetConfirmInput, setResetConfirmInput] = useState('');
@@ -173,9 +181,13 @@ export const DataBackupModal: React.FC<DataBackupModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="backup-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
     >
       <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">

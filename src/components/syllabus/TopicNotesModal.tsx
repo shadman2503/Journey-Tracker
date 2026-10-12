@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { SyllabusTopic } from '@/domain/types';
 import { X, Save, FileText } from 'lucide-react';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 interface TopicNotesModalProps {
   topic: SyllabusTopic;
@@ -19,6 +20,13 @@ export const TopicNotesModal: React.FC<TopicNotesModalProps> = ({
 }) => {
   const [notes, setNotes] = useState(initialNotes);
   const [isSaving, setIsSaving] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+  });
 
   useEffect(() => {
     setNotes(initialNotes);
@@ -27,9 +35,7 @@ export const TopicNotesModal: React.FC<TopicNotesModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
-      if (e.key === 'Escape') {
-        onClose();
-      } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         handleSave();
       }
@@ -53,9 +59,13 @@ export const TopicNotesModal: React.FC<TopicNotesModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role='dialog'
       aria-modal='true'
       aria-labelledby='topic-notes-title'
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm'
     >
       <div className='relative w-full max-w-lg rounded-xl border bg-card p-6 shadow-xl animate-in fade-in-0 zoom-in-95'>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId, useMemo } from 'react';
+import React, { useState, useEffect, useId, useMemo, useRef } from 'react';
 import { X, Award, Save, AlertCircle } from 'lucide-react';
 import { useMockTestStore } from '@/stores/useMockTestStore';
 import type { SubjectId } from '@/domain/types';
@@ -10,6 +10,7 @@ import {
 } from '@/domain/mockTest';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 const SCOPE_OPTIONS: { id: SubjectId | ''; label: string }[] = [
   { id: '', label: 'Full Syllabus (সকল বিষয়)' },
@@ -46,6 +47,13 @@ export const RecordMockTestModal: React.FC<RecordMockTestModalProps> = ({
 
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
   const handleClose = propOnClose || storeClose;
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose: handleClose,
+    containerRef: dialogRef,
+  });
 
   const today = useMemo(() => {
     const d = new Date();
@@ -149,9 +157,13 @@ export const RecordMockTestModal: React.FC<RecordMockTestModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
       <div className="relative w-full max-w-xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">

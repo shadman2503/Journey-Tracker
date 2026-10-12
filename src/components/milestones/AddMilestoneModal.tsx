@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Flag, AlertCircle } from 'lucide-react';
 import type { MilestoneCategory } from '@/domain/types';
 import { Button } from '@/components/ui/button';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 import {
   createCustomMilestoneSchema,
   type CreateCustomMilestoneInput,
@@ -24,6 +25,13 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
   const [category, setCategory] = useState<MilestoneCategory>('custom');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+  });
 
   if (!isOpen) return null;
 
@@ -65,9 +73,13 @@ export const AddMilestoneModal: React.FC<AddMilestoneModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role='dialog'
       aria-modal='true'
       aria-label='Add Custom Milestone'
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs'
     >
       <div className='relative w-full max-w-lg rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95'>

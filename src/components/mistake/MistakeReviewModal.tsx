@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 import {
   X,
   Sparkles,
@@ -20,6 +20,7 @@ import {
 import { MISTAKE_TYPE_CONFIG, MISTAKE_STATUS_CONFIG } from '@/domain/mistake';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 export interface MistakeReviewModalProps {
   isOpen?: boolean;
@@ -37,6 +38,13 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
 
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
   const handleClose = propOnClose || storeClose;
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose: handleClose,
+    containerRef: dialogRef,
+  });
 
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
   const [includeAllActive, setIncludeAllActive] = useState(false);
@@ -114,9 +122,13 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
       <div className="relative w-full max-w-xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[92vh] overflow-y-auto">

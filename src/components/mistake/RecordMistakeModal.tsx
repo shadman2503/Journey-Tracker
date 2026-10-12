@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 import { X, AlertCircle, Save, Calendar } from 'lucide-react';
 import { useMistakeStore } from '@/stores/useMistakeStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
@@ -12,6 +12,7 @@ import {
 } from '@/domain/mistake';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 const SUBJECT_OPTIONS: { id: SubjectId; label: string }[] = [
   { id: 'math', label: 'Mathematics (গণিত)' },
@@ -43,6 +44,13 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
 
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
   const handleClose = propOnClose || storeClose;
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose: handleClose,
+    containerRef: dialogRef,
+  });
 
   const isEditing = !!editingMistake;
 
@@ -188,9 +196,13 @@ export const RecordMistakeModal: React.FC<RecordMistakeModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
       <div className="relative w-full max-w-xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[92vh] overflow-y-auto">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId, useMemo } from 'react';
+import React, { useState, useEffect, useId, useMemo, useRef } from 'react';
 import { X, Clock, CheckCircle2, Save } from 'lucide-react';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { syllabusRepository } from '@/repositories/syllabusRepository';
@@ -6,6 +6,8 @@ import type { SubjectId, SyllabusTopic } from '@/domain/types';
 import { calculateAccuracy, createStudySessionSchema } from '@/domain/studySession';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
+import { toast } from '@/stores/useToastStore';
 
 const SUBJECT_OPTIONS: { id: SubjectId; label: string }[] = [
   { id: 'math', label: 'Mathematics (গণিত)' },
@@ -36,6 +38,13 @@ export const RecordSessionModal: React.FC<RecordSessionModalProps> = ({
 
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
   const handleClose = propOnClose || storeClose;
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose: handleClose,
+    containerRef: dialogRef,
+  });
 
   // Form State
   const today = useMemo(() => {
@@ -145,6 +154,7 @@ export const RecordSessionModal: React.FC<RecordSessionModalProps> = ({
     try {
       setIsSubmitting(true);
       const newId = await recordSession(validation.data);
+      toast.success('Study session recorded successfully!');
       if (onSaved) {
         onSaved(newId);
       }
@@ -162,9 +172,13 @@ export const RecordSessionModal: React.FC<RecordSessionModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
       <div className="relative w-full max-w-lg rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">

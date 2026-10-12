@@ -1,9 +1,10 @@
-import React, { useEffect, useId, useMemo } from 'react';
+import React, { useRef, useId, useMemo } from 'react';
 import { X, Clock, Award, CheckCircle2 } from 'lucide-react';
 import type { MockTest } from '@/domain/types';
 import { compareMockTests, calculateMockPercentage } from '@/domain/mockTest';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 export interface MockTestComparisonModalProps {
   isOpen: boolean;
@@ -19,18 +20,13 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
   onClose,
 }) => {
   const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  // Keyboard Escape listener
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useDialogAccessibility({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+  });
 
   const comparison = useMemo(() => {
     if (!testA || !testB) return null;
@@ -45,9 +41,13 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
       <div className="relative w-full max-w-2xl rounded-2xl border bg-card p-4 sm:p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto space-y-4 sm:space-y-5">

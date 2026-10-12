@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Calendar, RotateCcw, Save } from 'lucide-react';
 import { DEFAULT_EXAM_DATE, DEFAULT_EXAM_TITLE } from '@/domain/countdown';
+import { useDialogAccessibility } from '@/hooks/useDialogAccessibility';
 
 interface EditTargetDateModalProps {
   isOpen: boolean;
@@ -32,23 +33,19 @@ export const EditTargetDateModal: React.FC<EditTargetDateModalProps> = ({
   const [dateValue, setDateValue] = useState(() => getInitialDateValue(currentTargetDate));
   const [titleValue, setTitleValue] = useState(currentExamTitle);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogAccessibility({
+    isOpen,
+    onClose,
+    containerRef: dialogRef,
+  });
 
   useEffect(() => {
     setDateValue(getInitialDateValue(currentTargetDate));
     setTitleValue(currentExamTitle);
     setError(null);
   }, [currentTargetDate, currentExamTitle, isOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -74,9 +71,13 @@ export const EditTargetDateModal: React.FC<EditTargetDateModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="edit-target-date-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
     >
       <div className="relative w-full max-w-md rounded-xl border bg-card p-6 shadow-xl animate-in fade-in-0 zoom-in-95">

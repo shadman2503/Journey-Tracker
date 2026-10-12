@@ -9,6 +9,7 @@ import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { MistakesPage } from '@/pages/MistakesPage';
 import { JourneyPage } from '@/pages/JourneyPage';
 import { useAppStore } from '@/stores/useAppStore';
+import { ToastContainer } from '@/components/common/ToastContainer';
 
 export const App: React.FC = () => {
   const { theme } = useAppStore();
@@ -24,8 +25,20 @@ export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className='min-h-screen flex flex-col bg-background text-foreground'>
+        {/* Skip to Main Content Link for Keyboard and Screen Reader Accessibility */}
+        <a
+          href='#main-content'
+          className='sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+        >
+          Skip to main content
+        </a>
+
         <Navbar />
-        <main className='flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6'>
+        <main
+          id='main-content'
+          tabIndex={-1}
+          className='flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 focus:outline-none'
+        >
           <Routes>
             <Route path='/' element={<DashboardPage />} />
             <Route path='/syllabus' element={<SyllabusPage />} />
@@ -37,6 +50,7 @@ export const App: React.FC = () => {
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>
         </main>
+        <ToastContainer />
       </div>
     </BrowserRouter>
   );

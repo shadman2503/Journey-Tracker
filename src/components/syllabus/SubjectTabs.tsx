@@ -28,7 +28,7 @@ export const SubjectTabs: React.FC<SubjectTabsProps> = ({
       aria-label='Syllabus Subjects'
       className='flex items-center gap-2 border-b pb-3 overflow-x-auto no-scrollbar scroll-smooth sm:flex-wrap'
     >
-      {subjects.map((subject) => {
+      {subjects.map((subject, index) => {
         const isSelected = subject.id === selectedSubjectId;
         const Icon = iconMap[subject.iconName] || Calculator;
 
@@ -36,10 +36,23 @@ export const SubjectTabs: React.FC<SubjectTabsProps> = ({
           <button
             key={subject.id}
             role='tab'
+            tabIndex={isSelected ? 0 : -1}
             aria-selected={isSelected}
             onClick={() => onSelectSubject(subject.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                const nextIndex = (index + 1) % subjects.length;
+                onSelectSubject(subjects[nextIndex].id);
+              } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prevIndex = (index - 1 + subjects.length) % subjects.length;
+                onSelectSubject(subjects[prevIndex].id);
+              }
+            }}
             className={cn(
               'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shrink-0 min-h-[40px]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isSelected
                 ? 'bg-primary text-primary-foreground shadow-sm font-semibold'
                 : 'bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:text-foreground',
