@@ -131,7 +131,7 @@ export const MockTestsPage: React.FC = () => {
         </div>
         <Button
           onClick={() => openRecordModal()}
-          className="self-start sm:self-center gap-1.5 shadow-xs"
+          className="self-start sm:self-center gap-1.5 shadow-xs w-full sm:w-auto min-h-[40px]"
         >
           <Plus className="h-4 w-4" />
           <span>Record Mock Test</span>

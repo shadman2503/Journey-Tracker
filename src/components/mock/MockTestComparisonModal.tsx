@@ -50,7 +50,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
       aria-labelledby={titleId}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs"
     >
-      <div className="relative w-full max-w-2xl rounded-2xl border bg-card p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto space-y-5">
+      <div className="relative w-full max-w-2xl rounded-2xl border bg-card p-4 sm:p-6 shadow-2xl animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto space-y-4 sm:space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b">
           <div className="flex items-center gap-2.5">
@@ -92,18 +92,18 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
         </div>
 
         {/* Comparison Table / Matrix */}
-        <div className="border rounded-xl overflow-hidden divide-y text-sm">
+        <div className="border rounded-xl overflow-hidden divide-y text-xs sm:text-sm">
           {/* Net Score Row */}
-          <div className="grid grid-cols-3 p-3 items-center bg-card">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-card">
             <div className="font-semibold text-foreground">Net Score</div>
-            <div className="text-center font-bold text-base text-primary">
+            <div className="text-center font-bold text-sm sm:text-base text-primary">
               {testA.score.toFixed(2)}
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-semibold">{testB.score.toFixed(2)}</span>
               <span
                 className={cn(
-                  'text-xs font-bold px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
+                  'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.scoreDelta > 0
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                     : comparison.scoreDelta < 0
@@ -117,16 +117,16 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           </div>
 
           {/* Accuracy Row */}
-          <div className="grid grid-cols-3 p-3 items-center bg-muted/20">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-muted/20">
             <div className="font-semibold text-foreground">Accuracy</div>
             <div className="text-center font-bold text-foreground">
               {testA.accuracy}%
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-medium">{testB.accuracy}%</span>
               <span
                 className={cn(
-                  'text-xs font-bold px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
+                  'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.accuracyDelta > 0
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                     : comparison.accuracyDelta < 0
@@ -140,16 +140,16 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           </div>
 
           {/* Max Marks % */}
-          <div className="grid grid-cols-3 p-3 items-center bg-card">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-card">
             <div className="font-semibold text-foreground">Total Score %</div>
             <div className="text-center font-bold text-foreground">
               {pctA}%
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-medium">{pctB}%</span>
               <span
                 className={cn(
-                  'text-xs font-bold px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
+                  'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   pctDelta > 0
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                     : pctDelta < 0
@@ -163,16 +163,16 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           </div>
 
           {/* Correct Answers */}
-          <div className="grid grid-cols-3 p-3 items-center bg-muted/20">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-muted/20">
             <div className="font-semibold text-foreground">Correct Answers</div>
             <div className="text-center font-bold text-emerald-600 dark:text-emerald-400">
               +{testA.correctAnswers}
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-medium">+{testB.correctAnswers}</span>
               <span
                 className={cn(
-                  'text-xs font-bold px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
+                  'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.correctDelta > 0
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                     : comparison.correctDelta < 0
@@ -186,16 +186,16 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           </div>
 
           {/* Wrong Answers */}
-          <div className="grid grid-cols-3 p-3 items-center bg-card">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-card">
             <div className="font-semibold text-foreground">Wrong Answers</div>
             <div className="text-center font-bold text-rose-600 dark:text-rose-400">
               -{testA.wrongAnswers}
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-medium">-{testB.wrongAnswers}</span>
               <span
                 className={cn(
-                  'text-xs font-bold px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
+                  'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.wrongDelta < 0
                     ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' // fewer mistakes is positive
                     : comparison.wrongDelta > 0
@@ -209,7 +209,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           </div>
 
           {/* Time Taken */}
-          <div className="grid grid-cols-3 p-3 items-center bg-muted/20">
+          <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-muted/20">
             <div className="font-semibold text-foreground flex items-center gap-1.5">
               <Clock className="h-4 w-4 text-muted-foreground" />
               Time Taken
@@ -217,9 +217,9 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
             <div className="text-center font-bold text-foreground">
               {testA.timeTakenMinutes}m
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2">
               <span className="text-muted-foreground font-medium">{testB.timeTakenMinutes}m</span>
-              <span className="text-xs font-medium text-muted-foreground px-2 py-0.5 rounded-md border bg-muted">
+              <span className="text-[10px] sm:text-xs font-medium text-muted-foreground px-1.5 sm:px-2 py-0.5 rounded-md border bg-muted">
                 {comparison.timeDeltaMinutes > 0 ? `+${comparison.timeDeltaMinutes}m` : `${comparison.timeDeltaMinutes}m`}
               </span>
             </div>

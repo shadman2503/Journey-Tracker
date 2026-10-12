@@ -26,7 +26,7 @@ export const SubjectTabs: React.FC<SubjectTabsProps> = ({
     <div
       role='tablist'
       aria-label='Syllabus Subjects'
-      className='flex flex-wrap items-center gap-2 border-b pb-3'
+      className='flex items-center gap-2 border-b pb-3 overflow-x-auto no-scrollbar scroll-smooth sm:flex-wrap'
     >
       {subjects.map((subject) => {
         const isSelected = subject.id === selectedSubjectId;
@@ -39,7 +39,7 @@ export const SubjectTabs: React.FC<SubjectTabsProps> = ({
             aria-selected={isSelected}
             onClick={() => onSelectSubject(subject.id)}
             className={cn(
-              'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all',
+              'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shrink-0 min-h-[40px]',
               isSelected
                 ? 'bg-primary text-primary-foreground shadow-sm font-semibold'
                 : 'bg-secondary/60 text-secondary-foreground hover:bg-secondary hover:text-foreground',

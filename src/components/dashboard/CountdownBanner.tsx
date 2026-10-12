@@ -116,43 +116,43 @@ export const CountdownBanner: React.FC = () => {
         </div>
 
         {/* Big Digit Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Days */}
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl border bg-background/80 shadow-xs">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
+          <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border bg-background/80 shadow-xs">
+            <span className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
               {countdown.days}
             </span>
-            <span className="text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
               Days
             </span>
           </div>
 
           {/* Hours */}
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl border bg-background/80 shadow-xs">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
+          <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border bg-background/80 shadow-xs">
+            <span className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
               {formatDigit(countdown.hours)}
             </span>
-            <span className="text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
               Hours
             </span>
           </div>
 
           {/* Minutes */}
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl border bg-background/80 shadow-xs">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
+          <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border bg-background/80 shadow-xs">
+            <span className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground font-mono">
               {formatDigit(countdown.minutes)}
             </span>
-            <span className="text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
               Minutes
             </span>
           </div>
 
           {/* Seconds */}
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl border bg-background/80 shadow-xs">
-            <span className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-primary font-mono">
+          <div className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border bg-background/80 shadow-xs">
+            <span className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-primary font-mono">
               {formatDigit(countdown.seconds)}
             </span>
-            <span className="text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground tracking-wider uppercase mt-1">
               Seconds
             </span>
           </div>

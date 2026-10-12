@@ -122,7 +122,7 @@ export const StudyLogPage: React.FC = () => {
 
         <Button
           onClick={() => openRecordModal()}
-          className='self-start sm:self-center gap-1.5 shadow-xs'
+          className='self-start sm:self-center gap-1.5 shadow-xs w-full sm:w-auto min-h-[40px]'
         >
           <Plus className='h-4 w-4' />
           <span>Record Study Session</span>
@@ -196,7 +196,7 @@ export const StudyLogPage: React.FC = () => {
       {/* Filter and Search Bar */}
       <div className='space-y-4'>
         {/* Subject Filter Pills */}
-        <div className='flex flex-wrap items-center gap-1.5'>
+        <div className='flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:flex-wrap'>
           {SUBJECT_FILTER_TABS.map((tab) => {
             const count = subjectCounts[tab.id] || 0;
             const isSelected = selectedSubject === tab.id;
@@ -206,7 +206,7 @@ export const StudyLogPage: React.FC = () => {
                 type='button'
                 onClick={() => setSelectedSubject(tab.id)}
                 className={cn(
-                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors shrink-0 min-h-[36px]',
                   isSelected
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-card hover:bg-muted text-muted-foreground hover:text-foreground',

@@ -146,38 +146,38 @@ export const DashboardPage: React.FC = () => {
             Turn a huge syllabus into a visible journey. Every completed topic brings you closer.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-center">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => openMockModal()}
-            className="gap-1.5 shadow-xs"
+            className="gap-1.5 shadow-xs w-full sm:w-auto text-xs sm:text-sm min-h-[40px] px-2.5 sm:px-3"
           >
-            <Award className="h-4 w-4 text-sky-500" />
-            <span>Record Mock Test</span>
+            <Award className="h-4 w-4 text-sky-500 shrink-0" />
+            <span className="truncate">Record Mock Test</span>
           </Button>
           <Button
             variant="outline"
             onClick={() => openMistakeRecordModal()}
-            className="gap-1.5 shadow-xs"
+            className="gap-1.5 shadow-xs w-full sm:w-auto text-xs sm:text-sm min-h-[40px] px-2.5 sm:px-3"
           >
-            <AlertTriangle className="h-4 w-4 text-rose-500" />
-            <span>Log Mistake</span>
+            <AlertTriangle className="h-4 w-4 text-rose-500 shrink-0" />
+            <span className="truncate">Log Mistake</span>
           </Button>
           <Button
             variant="outline"
             onClick={() => setIsBackupModalOpen(true)}
-            className="gap-1.5 shadow-xs"
+            className="gap-1.5 shadow-xs w-full sm:w-auto text-xs sm:text-sm min-h-[40px] px-2.5 sm:px-3"
             aria-label="Backup and restore data"
           >
-            <Database className="h-4 w-4 text-primary" />
-            <span>Backup</span>
+            <Database className="h-4 w-4 text-primary shrink-0" />
+            <span className="truncate">Backup</span>
           </Button>
           <Button
             onClick={() => openRecordModal()}
-            className="gap-1.5 shadow-xs"
+            className="gap-1.5 shadow-xs w-full sm:w-auto text-xs sm:text-sm min-h-[40px] px-2.5 sm:px-3"
           >
-            <Plus className="h-4 w-4" />
-            <span>Record Study Session</span>
+            <Plus className="h-4 w-4 shrink-0" />
+            <span className="truncate">Record Study Session</span>
           </Button>
         </div>
       </div>
@@ -186,7 +186,7 @@ export const DashboardPage: React.FC = () => {
       <CountdownBanner />
 
       {/* Top Level Metric Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="flex items-center justify-between pb-2">
             <span className="text-sm font-medium text-muted-foreground">

@@ -215,7 +215,7 @@ export const MistakeFilterBar: React.FC<MistakeFilterBarProps> = ({
         </div>
 
         {/* Sort By Select */}
-        <div className="space-y-1">
+        <div className="space-y-1 col-span-2 sm:col-span-1">
           <label htmlFor="filter-sort" className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
             <ArrowUpDown className="h-3 w-3" />
             <span>Sort By</span>

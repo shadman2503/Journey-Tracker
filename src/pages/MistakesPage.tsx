@@ -29,6 +29,7 @@ import {
   generatePatternInsights,
 } from '@/domain/recurringMistakes';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const DEFAULT_FILTERS: MistakeFilterOptions = {
   searchQuery: '',
@@ -110,23 +111,26 @@ export const MistakesPage: React.FC = () => {
             Log problem slips, reflect on what went wrong, and eliminate repeat errors through spaced review
           </p>
         </div>
-        <div className="flex items-center gap-2.5 self-start sm:self-center">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           {mistakes.length > 0 && (
             <Button
               variant="outline"
               onClick={() => openReviewSession()}
-              className="gap-1.5 shadow-xs"
+              className="gap-1.5 shadow-xs w-full sm:w-auto min-h-[40px] text-xs sm:text-sm px-2.5 sm:px-3"
             >
-              <RotateCcw className="h-4 w-4" />
-              <span>Review Workout</span>
+              <RotateCcw className="h-4 w-4 shrink-0" />
+              <span className="truncate">Review Workout</span>
             </Button>
           )}
           <Button
             onClick={() => openRecordModal()}
-            className="gap-1.5 shadow-xs"
+            className={cn(
+              "gap-1.5 shadow-xs w-full sm:w-auto min-h-[40px] text-xs sm:text-sm px-2.5 sm:px-3",
+              mistakes.length === 0 && "col-span-2"
+            )}
           >
-            <Plus className="h-4 w-4" />
-            <span>Log Mistake</span>
+            <Plus className="h-4 w-4 shrink-0" />
+            <span className="truncate">Log Mistake</span>
           </Button>
         </div>
       </div>
