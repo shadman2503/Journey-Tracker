@@ -4,15 +4,15 @@
 
 @layer base {
   :root {
-    /* Calm, warm-slate light theme with soft off-white background and grounded emerald */
+    /* Calm, warm-slate light theme with soft off-white background */
     --background: 220 16% 96%;
     --foreground: 222 47% 12%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 12%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 12%;
-    --primary: 158 64% 36%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 34 87% 72%;
+    --primary-foreground: 224 25% 6.5%;
     --secondary: 220 14% 92%;
     --secondary-foreground: 222 47% 12%;
     --muted: 220 14% 92%;
@@ -23,31 +23,38 @@
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 88%;
     --input: 220 13% 88%;
-    --ring: 158 64% 36%;
-    --radius: 0.5rem;
+    --ring: 34 87% 72%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    /* Obsidian & Charcoal Dark with Light Gray Typography and Emerald Accent */
-    --background: 240 10% 3.9%;
-    --foreground: 240 5% 86%;
-    --card: 240 10% 7%;
-    --card-foreground: 240 5% 86%;
-    --popover: 240 10% 7%;
-    --popover-foreground: 240 5% 86%;
-    --primary: 158 64% 52%;
-    --primary-foreground: 158 75% 6%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 240 5% 86%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 60%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 240 5% 86%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 240 5% 86%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 158 64% 52%;
+    /* Sleek start.dev inspired dark obsidian palette */
+    --background: 224 25% 6.5%;        /* #0c0e14 - deep rich cosmic dark */
+    --foreground: 210 40% 98%;         /* #f8fafc - high-contrast crisp white */
+    --card: 224 20% 10.5%;             /* #141722 - elevated dark container */
+    --card-foreground: 210 40% 98%;    /* #f8fafc */
+    --popover: 224 20% 10.5%;          /* #141722 */
+    --popover-foreground: 210 40% 98%; /* #f8fafc */
+    
+    /* Warm apricot-gold #F6C07A primary accent */
+    --primary: 34 87% 72%;             /* #F6C07A soft warm gold */
+    --primary-foreground: 224 25% 6.5%;/* #0c0e14 dark contrast text on #F6C07A */
+    
+    --secondary: 224 16% 14.5%;        /* #1a1e29 - dark pill / chip / track */
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 224 16% 14.5%;            /* #1a1e29 */
+    --muted-foreground: 217 14% 63%;   /* #8e98aa - cool slate secondary text */
+    
+    --accent: 224 18% 16%;             /* #1f2432 - hover state */
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 224 15% 18%;             /* #222735 - subtle crisp borders */
+    --input: 224 15% 18%;              /* #222735 */
+    --ring: 34 87% 72%;                /* #F6C07A */
   }
 }
 

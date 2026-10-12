@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { format } from 'date-fns';
 import { DashboardPage } from './DashboardPage';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
@@ -72,7 +73,7 @@ describe('DashboardPage', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('DUET 2027 Journey Dashboard')).toBeInTheDocument();
+    expect(screen.getByText(/It is Now or/i)).toBeInTheDocument();
     expect(screen.getByText('Overall Completion')).toBeInTheDocument();
     expect(screen.getByText('Current Streak')).toBeInTheDocument();
     expect(screen.getByText('Questions Solved')).toBeInTheDocument();
@@ -261,7 +262,7 @@ describe('DashboardPage', () => {
   });
 
   it('renders live study streak status from study session store', async () => {
-    const todayStr = new Date().toISOString().slice(0, 10);
+    const todayStr = format(new Date(), 'yyyy-MM-dd');
     useStudySessionStore.setState({
       sessions: [
         {
