@@ -477,6 +477,101 @@ describe('DashboardPage', () => {
 
     expect(screen.queryByRole('dialog', { name: /Add Custom Milestone/i })).not.toBeInTheDocument();
   });
+
+  it('opens record mistake modal when Log Mistake button is clicked in header', async () => {
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    const logMistakeBtn = screen.getAllByRole('button', { name: /Log Mistake/i })[0];
+    expect(logMistakeBtn).toBeInTheDocument();
+    fireEvent.click(logMistakeBtn);
+
+    expect(screen.getByRole('heading', { name: /Log New Mistake/i })).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    fireEvent.click(cancelBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: /Log New Mistake/i })).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders mock performance spotlight with test details and trajectory', async () => {
+    useMockTestStore.setState({
+      tests: [
+        {
+          id: 1,
+          testName: 'DUET Practice Model 1',
+          date: '2026-10-01',
+          totalQuestions: 100,
+          correctAnswers: 75,
+          wrongAnswers: 15,
+          score: 71.25,
+          accuracy: 83.3,
+          timeTakenMinutes: 110,
+          createdAt: '',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Mock Test Performance')).toBeInTheDocument();
+      expect(screen.getByText('DUET Practice Model 1')).toBeInTheDocument();
+      expect(screen.getByText(/1 Taken/i)).toBeInTheDocument();
+      expect(screen.getByText(/83.3% Accuracy/i)).toBeInTheDocument();
+    });
+  });
+
+  it('renders mistakes spotlight and launches spaced review modal', async () => {
+    useMistakeStore.setState({
+      mistakes: [
+        {
+          id: 1,
+          subjectId: 'math',
+          topicId: 'math-alg-complex',
+          questionRef: 'DUET 2024 Math Q-5',
+          whatWentWrong: 'Sign slip during modulus computation',
+          correctSolution: '|z| = sqrt(x^2 + y^2)',
+          type: 'calculation',
+          status: 'unresolved',
+          reviewDate: '2026-09-01',
+          createdAt: '2026-09-01T10:00:00.000Z',
+        },
+      ],
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(
+      <MemoryRouter>
+        <DashboardPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Mistake Journal & Hotspots')).toBeInTheDocument();
+      expect(screen.getByText(/1 Active/i)).toBeInTheDocument();
+      expect(screen.getByText(/1 Mistake Due for Review/i)).toBeInTheDocument();
+    });
+
+    // Click Start Review
+    const startReviewBtn = screen.getByRole('button', { name: /Start Review/i });
+    fireEvent.click(startReviewBtn);
+
+    expect(screen.getByText(/Card 1 of 1/i)).toBeInTheDocument();
+    expect(screen.getByText('DUET 2024 Math Q-5')).toBeInTheDocument();
+  });
 });
 
 

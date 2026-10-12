@@ -1,6 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Compass, BookCheck, Clock, Plus, Award, Target, X, Sparkles } from 'lucide-react';
+import {
+  Compass,
+  BookCheck,
+  Clock,
+  Plus,
+  Award,
+  Target,
+  X,
+  Sparkles,
+  AlertTriangle,
+} from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
 import { useMockTestStore } from '@/stores/useMockTestStore';
@@ -26,6 +36,10 @@ import { RevisionRecommendationsList } from '@/components/revision/RevisionRecom
 import { useMilestoneStore } from '@/stores/useMilestoneStore';
 import { MilestoneDashboardWidget } from '@/components/milestones/MilestoneDashboardWidget';
 import { AddMilestoneModal } from '@/components/milestones/AddMilestoneModal';
+import { MockPerformanceDashboardWidget } from '@/components/dashboard/MockPerformanceDashboardWidget';
+import { MistakesDashboardWidget } from '@/components/dashboard/MistakesDashboardWidget';
+import { RecordMistakeModal } from '@/components/mistake/RecordMistakeModal';
+import { MistakeReviewModal } from '@/components/mistake/MistakeReviewModal';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
@@ -43,6 +57,8 @@ export const DashboardPage: React.FC = () => {
   const openMockModal = useMockTestStore((state) => state.openRecordModal);
   const loadMistakes = useMistakeStore((state) => state.loadMistakes);
   const mistakes = useMistakeStore((state) => state.mistakes);
+  const openMistakeRecordModal = useMistakeStore((state) => state.openRecordModal);
+  const openReviewSession = useMistakeStore((state) => state.openReviewSession);
   const mockTests = useMockTestStore((state) => state.tests);
 
   const loadCustomMilestones = useMilestoneStore((state) => state.loadCustomMilestones);
@@ -117,7 +133,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
+      {/* Page Header & Command Center Actions Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-extrabold tracking-tight">
@@ -133,8 +149,16 @@ export const DashboardPage: React.FC = () => {
             onClick={() => openMockModal()}
             className="gap-1.5 shadow-xs"
           >
-            <Award className="h-4 w-4 text-primary" />
+            <Award className="h-4 w-4 text-sky-500" />
             <span>Record Mock Test</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => openMistakeRecordModal()}
+            className="gap-1.5 shadow-xs"
+          >
+            <AlertTriangle className="h-4 w-4 text-rose-500" />
+            <span>Log Mistake</span>
           </Button>
           <Button
             onClick={() => openRecordModal()}
@@ -215,21 +239,42 @@ export const DashboardPage: React.FC = () => {
         <SubjectProgressGrid subjects={overallSummary.subjects} />
       </div>
 
-      {/* Weak Area Detection Radar Spotlight */}
-      <WeakAreaDashboardWidget
-        weakAreas={weakAreas}
-        onViewRadar={() => setIsRadarModalOpen(true)}
-        onPracticeTopic={handlePracticeTopic}
-        onViewMistakes={handleViewMistakes}
-      />
+      {/* Diagnostic & Performance Intelligence Command Center */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Column 1: Diagnostic Radar & Revision Planner */}
+        <div className="space-y-6">
+          <WeakAreaDashboardWidget
+            weakAreas={weakAreas}
+            onViewRadar={() => setIsRadarModalOpen(true)}
+            onPracticeTopic={handlePracticeTopic}
+            onViewMistakes={handleViewMistakes}
+          />
 
-      {/* Revision Recommendations Planner Spotlight */}
-      <RevisionDashboardWidget
-        recommendations={revisionRecommendations}
-        onViewPlan={() => setIsRevisionModalOpen(true)}
-        onStartPractice={handleStartPracticeRevision}
-        onViewMistakes={handleViewMistakes}
-      />
+          <RevisionDashboardWidget
+            recommendations={revisionRecommendations}
+            onViewPlan={() => setIsRevisionModalOpen(true)}
+            onStartPractice={handleStartPracticeRevision}
+            onViewMistakes={handleViewMistakes}
+          />
+        </div>
+
+        {/* Column 2: Mock Performance & Mistake Journal */}
+        <div className="space-y-6">
+          <MockPerformanceDashboardWidget
+            tests={mockTests}
+            onRecordMockTest={() => openMockModal()}
+            onViewAll={() => navigate('/mock-tests')}
+          />
+
+          <MistakesDashboardWidget
+            mistakes={mistakes}
+            topics={topics}
+            onLogMistake={() => openMistakeRecordModal()}
+            onReviewMistakes={() => openReviewSession()}
+            onViewAll={() => navigate('/mistakes')}
+          />
+        </div>
+      </div>
 
       {/* Journey Milestones Spotlight */}
       <MilestoneDashboardWidget
@@ -338,6 +383,12 @@ export const DashboardPage: React.FC = () => {
 
       {/* Record Mock Test Modal */}
       <RecordMockTestModal />
+
+      {/* Record Mistake Modal */}
+      <RecordMistakeModal />
+
+      {/* Spaced Mistake Review Session Modal */}
+      <MistakeReviewModal />
 
       {/* Add Custom Milestone Modal */}
       <AddMilestoneModal
