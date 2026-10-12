@@ -3,7 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { AnalyticsPage } from './AnalyticsPage';
 import { useMockTestStore } from '@/stores/useMockTestStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
-import type { MockTest, StudySession } from '@/domain/types';
+import { useMistakeStore } from '@/stores/useMistakeStore';
+import type { MockTest, StudySession, Mistake } from '@/domain/types';
 
 // Mock repositories
 vi.mock('@/repositories/dexie', () => ({
@@ -15,6 +16,12 @@ vi.mock('@/repositories/dexie', () => ({
   studySessionRepo: {
     getAll: vi.fn().mockResolvedValue([]),
     add: vi.fn().mockResolvedValue(1),
+    delete: vi.fn().mockResolvedValue(undefined),
+  },
+  mistakeRepo: {
+    getAll: vi.fn().mockResolvedValue([]),
+    add: vi.fn().mockResolvedValue(1),
+    update: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn().mockResolvedValue(undefined),
   },
 }));
@@ -91,6 +98,31 @@ describe('AnalyticsPage', () => {
     },
   ];
 
+  const sampleMistakes: Mistake[] = [
+    {
+      id: 1,
+      subjectId: 'math',
+      topicId: 'math-calc-01',
+      questionRef: 'Q1',
+      whatWentWrong: 'Sign error',
+      correctSolution: 'Check sign',
+      type: 'calculation',
+      status: 'fixed',
+      createdAt: '',
+    },
+    {
+      id: 2,
+      subjectId: 'physics',
+      topicId: 'phy-mech-01',
+      questionRef: 'Q2',
+      whatWentWrong: 'Formula missed',
+      correctSolution: 'Use kinematic eq 3',
+      type: 'formula',
+      status: 'unresolved',
+      createdAt: '',
+    },
+  ];
+
   beforeEach(() => {
     vi.clearAllMocks();
     useMockTestStore.setState({
@@ -104,6 +136,13 @@ describe('AnalyticsPage', () => {
       loaded: true,
       isLoading: false,
       isRecordModalOpen: false,
+    });
+    useMistakeStore.setState({
+      mistakes: [],
+      loaded: true,
+      isLoading: false,
+      isRecordModalOpen: false,
+      editingMistake: null,
     });
   });
 
@@ -133,22 +172,75 @@ describe('AnalyticsPage', () => {
       loaded: true,
       isLoading: false,
     });
+    useMistakeStore.setState({
+      mistakes: sampleMistakes,
+      loaded: true,
+      isLoading: false,
+    });
 
     render(<AnalyticsPage />);
 
-    // KPI Header cards
+    // KPI Header cards in Performance section
     expect(screen.getByText('Average Mock Score')).toBeInTheDocument();
     expect(screen.getByText('Overall Accuracy')).toBeInTheDocument();
     expect(screen.getByText('Questions Solved')).toBeInTheDocument();
     expect(screen.getByText('Prep Time Logged')).toBeInTheDocument();
 
-    // Trajectory pill (improving from 55 to ~48 recent avg delta)
+    // Trajectory pill (improving)
     expect(screen.getByTestId('trajectory-improving')).toBeInTheDocument();
 
-    // Charts containers
+    // Performance charts containers
     expect(screen.getByTestId('mock-score-trend-chart')).toBeInTheDocument();
     expect(screen.getByTestId('accuracy-trend-chart')).toBeInTheDocument();
     expect(screen.getByTestId('subject-breakdown-chart')).toBeInTheDocument();
+
+    // Long-Term Preparation widgets
+    expect(screen.getByTestId('preparation-analytics-section')).toBeInTheDocument();
+    expect(screen.getByTestId('consistency-metrics-cards')).toBeInTheDocument();
+    expect(screen.getByTestId('cumulative-volume-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('study-velocity-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('subject-time-distribution-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('mistake-resolution-overview')).toBeInTheDocument();
+  });
+
+  it('switches between view tabs and filters displayed sections', () => {
+    useMockTestStore.setState({
+      tests: sampleTests,
+      loaded: true,
+      isLoading: false,
+    });
+    useStudySessionStore.setState({
+      sessions: sampleSessions,
+      loaded: true,
+      isLoading: false,
+    });
+
+    render(<AnalyticsPage />);
+
+    // Default: Consolidated view shows both sections
+    expect(screen.getByTestId('preparation-analytics-section')).toBeInTheDocument();
+    expect(screen.getByTestId('performance-analytics-section')).toBeInTheDocument();
+
+    // Switch to Preparation Pacing & Trends
+    const prepTab = screen.getByRole('tab', { name: /Preparation Pacing & Trends/i });
+    fireEvent.click(prepTab);
+
+    expect(screen.getByTestId('preparation-analytics-section')).toBeInTheDocument();
+    expect(screen.queryByTestId('performance-analytics-section')).not.toBeInTheDocument();
+
+    // Switch to Exam & Mock Performance
+    const perfTab = screen.getByRole('tab', { name: /Exam & Mock Performance/i });
+    fireEvent.click(perfTab);
+
+    expect(screen.queryByTestId('preparation-analytics-section')).not.toBeInTheDocument();
+    expect(screen.getByTestId('performance-analytics-section')).toBeInTheDocument();
+
+    // Switch back to Consolidated Overview
+    const consolidatedTab = screen.getByRole('tab', { name: /Consolidated Overview/i });
+    fireEvent.click(consolidatedTab);
+
+    expect(screen.getByTestId('preparation-analytics-section')).toBeInTheDocument();
+    expect(screen.getByTestId('performance-analytics-section')).toBeInTheDocument();
   });
 
   it('toggles time range filters correctly', () => {
@@ -195,4 +287,3 @@ describe('AnalyticsPage', () => {
     expect(useMockTestStore.getState().isRecordModalOpen).toBe(true);
   });
 });
-
