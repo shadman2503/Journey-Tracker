@@ -10,6 +10,7 @@ import {
   X,
   Sparkles,
   AlertTriangle,
+  Database,
 } from 'lucide-react';
 import { useTopicProgressStore } from '@/stores/useTopicProgressStore';
 import { useStudySessionStore } from '@/stores/useStudySessionStore';
@@ -40,6 +41,7 @@ import { MockPerformanceDashboardWidget } from '@/components/dashboard/MockPerfo
 import { MistakesDashboardWidget } from '@/components/dashboard/MistakesDashboardWidget';
 import { RecordMistakeModal } from '@/components/mistake/RecordMistakeModal';
 import { MistakeReviewModal } from '@/components/mistake/MistakeReviewModal';
+import { DataBackupModal } from '@/components/backup/DataBackupModal';
 import { Button } from '@/components/ui/button';
 
 export const DashboardPage: React.FC = () => {
@@ -47,6 +49,7 @@ export const DashboardPage: React.FC = () => {
   const [topics, setTopics] = useState<SyllabusTopic[]>([]);
   const [isRadarModalOpen, setIsRadarModalOpen] = useState<boolean>(false);
   const [isRevisionModalOpen, setIsRevisionModalOpen] = useState<boolean>(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState<boolean>(false);
 
   const loadProgress = useTopicProgressStore((state) => state.loadProgress);
   const progressMap = useTopicProgressStore((state) => state.progressMap);
@@ -159,6 +162,15 @@ export const DashboardPage: React.FC = () => {
           >
             <AlertTriangle className="h-4 w-4 text-rose-500" />
             <span>Log Mistake</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsBackupModalOpen(true)}
+            className="gap-1.5 shadow-xs"
+            aria-label="Backup and restore data"
+          >
+            <Database className="h-4 w-4 text-primary" />
+            <span>Backup</span>
           </Button>
           <Button
             onClick={() => openRecordModal()}
@@ -395,6 +407,12 @@ export const DashboardPage: React.FC = () => {
         isOpen={isMilestoneModalOpen}
         onClose={closeMilestoneModal}
         onSubmit={addCustomMilestone}
+      />
+
+      {/* Data Backup & Portability Modal */}
+      <DataBackupModal
+        isOpen={isBackupModalOpen}
+        onClose={() => setIsBackupModalOpen(false)}
       />
     </div>
   );

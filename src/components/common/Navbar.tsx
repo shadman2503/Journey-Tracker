@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Compass,
@@ -10,12 +10,15 @@ import {
   Milestone as MilestoneIcon,
   Moon,
   Sun,
+  Database,
 } from 'lucide-react';
 import { useAppStore } from '@/stores/useAppStore';
 import { Button } from '@/components/ui/button';
+import { DataBackupModal } from '@/components/backup/DataBackupModal';
 
 export const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useAppStore();
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: Compass },
@@ -60,12 +63,27 @@ export const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsBackupModalOpen(true)}
+            className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            aria-label="Backup and restore data"
+          >
+            <Database className="h-4 w-4 text-primary" />
+            <span className="hidden sm:inline">Backup</span>
+          </Button>
+
           <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
         </div>
       </div>
+
+      <DataBackupModal
+        isOpen={isBackupModalOpen}
+        onClose={() => setIsBackupModalOpen(false)}
+      />
     </header>
   );
 };
-
