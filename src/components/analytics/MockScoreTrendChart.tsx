@@ -49,7 +49,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
         <span className="font-bold text-foreground">{item.accuracy}%</span>
       </div>
       <div className="text-[11px] text-muted-foreground pt-1 flex justify-between">
-        <span className="text-emerald-600 dark:text-emerald-400">+{item.correctAnswers}</span>
+        <span className="text-primary font-medium">+{item.correctAnswers}</span>
         <span className="text-rose-600 dark:text-rose-400">-{penalty.toFixed(2)} penalty</span>
       </div>
     </div>
@@ -87,8 +87,14 @@ export const MockScoreTrendChart: React.FC<MockScoreTrendChartProps> = ({
         </span>
       </div>
 
-      <div className="h-[280px] w-full">
-        <ResponsiveContainer width="100%" height="100%" minWidth={100} minHeight={200}>
+      <div className="h-[280px] min-h-[280px] w-full">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minWidth={100}
+          minHeight={200}
+          initialDimension={{ width: 500, height: 280 }}
+        >
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">

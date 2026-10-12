@@ -49,7 +49,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
         {item.formattedDate}
       </div>
       {item.practiceAccuracy !== null && (
-        <div className='flex justify-between items-center text-emerald-600 dark:text-emerald-400'>
+        <div className='flex justify-between items-center text-blue-500 dark:text-blue-400'>
           <span>Practice:</span>
           <span className='font-bold'>{item.practiceAccuracy}%</span>
         </div>
@@ -149,7 +149,7 @@ export const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
         <span className='text-muted-foreground font-medium'>
           Accuracy Comparison
         </span>
-        <span className='flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400'>
+        <span className='flex items-center gap-1.5 font-medium text-primary'>
           Target: {benchmarkAccuracy}%
         </span>
       </div>
@@ -196,7 +196,7 @@ export const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
             />
             <ReferenceLine
               y={benchmarkAccuracy}
-              stroke='hsl(142 76% 36%)'
+              stroke='hsl(var(--primary))'
               strokeDasharray='4 4'
               strokeWidth={1.5}
             />
@@ -204,10 +204,10 @@ export const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
               type='monotone'
               dataKey='practiceAccuracy'
               name='Practice Accuracy'
-              stroke='#10b981'
+              stroke='#3b82f6'
               strokeWidth={2}
               connectNulls={true}
-              dot={{ r: 3, fill: '#10b981' }}
+              dot={{ r: 3, fill: '#3b82f6' }}
               activeDot={{ r: 5 }}
             />
             <Line

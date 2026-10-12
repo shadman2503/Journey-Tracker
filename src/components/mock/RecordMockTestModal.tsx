@@ -309,7 +309,7 @@ export const RecordMockTestModal: React.FC<RecordMockTestModalProps> = ({
 
             {/* Correct Answers */}
             <div className="space-y-1.5">
-              <label htmlFor="mock-correct-answers" className="text-xs font-semibold text-foreground text-emerald-600 dark:text-emerald-400">
+              <label htmlFor="mock-correct-answers" className="text-xs font-semibold text-primary">
                 Correct (+1 mark)
               </label>
               <input

@@ -17,7 +17,7 @@ const URGENCY_BADGE_CONFIG: Record<
 > = {
   relaxed: {
     label: 'Early Preparation',
-    badgeClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    badgeClass: 'bg-primary/10 text-primary border-primary/20',
     icon: Clock,
   },
   moderate: {
@@ -37,7 +37,7 @@ const URGENCY_BADGE_CONFIG: Record<
   },
   completed: {
     label: 'Exam Day Reached',
-    badgeClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    badgeClass: 'bg-primary/10 text-primary border-primary/20',
     icon: CheckCircle2,
   },
 };

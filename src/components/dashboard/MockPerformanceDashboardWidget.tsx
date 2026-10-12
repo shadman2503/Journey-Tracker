@@ -136,7 +136,7 @@ export const MockPerformanceDashboardWidget: React.FC<
               <span className="text-[11px] text-muted-foreground block font-medium">
                 Highest Score
               </span>
-              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-base font-bold text-primary">
                 {metrics.highestScore}
               </span>
             </div>
@@ -147,7 +147,7 @@ export const MockPerformanceDashboardWidget: React.FC<
               </span>
               <div className="flex items-center gap-1 mt-0.5">
                 {trajectory.direction === 'improving' ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
                     <TrendingUp className="h-3.5 w-3.5" />
                     +{trajectory.deltaScore}
                   </span>

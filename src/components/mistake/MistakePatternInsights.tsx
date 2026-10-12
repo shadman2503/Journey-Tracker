@@ -28,9 +28,9 @@ const INSIGHT_STYLE_CONFIG = {
     Icon: Info,
   },
   positive: {
-    border: 'border-emerald-500/25 dark:border-emerald-500/20',
-    bg: 'bg-emerald-500/5 dark:bg-emerald-950/10',
-    iconColor: 'text-emerald-500',
+    border: 'border-primary/30',
+    bg: 'bg-primary/5',
+    iconColor: 'text-primary',
     Icon: CheckCircle2,
   },
 };

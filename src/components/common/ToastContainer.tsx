@@ -10,7 +10,7 @@ export const ToastContainer: React.FC = () => {
   const renderIcon = (type: ToastType) => {
     switch (type) {
       case 'success':
-        return <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 shrink-0" />;
+        return <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />;
       case 'error':
         return <AlertCircle className="h-4.5 w-4.5 text-rose-500 shrink-0" />;
       case 'info':
@@ -22,7 +22,7 @@ export const ToastContainer: React.FC = () => {
   const getBorderColor = (type: ToastType) => {
     switch (type) {
       case 'success':
-        return 'border-emerald-500/30';
+        return 'border-primary/40';
       case 'error':
         return 'border-rose-500/30';
       case 'info':

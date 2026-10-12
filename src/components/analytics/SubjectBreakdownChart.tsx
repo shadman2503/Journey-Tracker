@@ -110,7 +110,7 @@ export const SubjectBreakdownChart: React.FC<SubjectBreakdownChartProps> = ({ da
             <Bar
               dataKey="practiceAccuracy"
               name="Practice Accuracy"
-              fill="#10b981"
+              fill="#3b82f6"
               radius={[4, 4, 0, 0]}
               maxBarSize={36}
             />
@@ -141,7 +141,7 @@ export const SubjectBreakdownChart: React.FC<SubjectBreakdownChartProps> = ({ da
               </div>
               <div className="flex justify-between">
                 <span>Accuracy:</span>
-                <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                <span className="font-medium text-primary">
                   {item.practiceAccuracy}%
                 </span>
               </div>

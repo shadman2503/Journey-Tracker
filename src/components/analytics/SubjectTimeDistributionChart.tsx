@@ -24,19 +24,19 @@ const SUBJECT_COLOR_MAP: Record<
     bar: 'bg-indigo-500',
   },
   chemistry: {
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-600 dark:text-emerald-400',
-    bar: 'bg-emerald-500',
-  },
-  english: {
     bg: 'bg-amber-500/10',
     text: 'text-amber-600 dark:text-amber-400',
     bar: 'bg-amber-500',
   },
+  english: {
+    bg: 'bg-rose-500/10',
+    text: 'text-rose-600 dark:text-rose-400',
+    bar: 'bg-rose-500',
+  },
   cse: {
-    bg: 'bg-purple-500/10',
-    text: 'text-purple-600 dark:text-purple-400',
-    bar: 'bg-purple-500',
+    bg: 'bg-teal-500/10',
+    text: 'text-teal-600 dark:text-teal-400',
+    bar: 'bg-teal-500',
   },
 };
 

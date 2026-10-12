@@ -63,7 +63,7 @@ export const MistakesDashboardWidget: React.FC<
                   {metrics.unresolvedCount} Active
                 </span>
               ) : metrics.totalMistakes > 0 ? (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20">
                   All Fixed
                 </span>
               ) : null}
@@ -149,7 +149,7 @@ export const MistakesDashboardWidget: React.FC<
               <span className="text-[11px] text-muted-foreground block font-medium">
                 Mastered & Fixed
               </span>
-              <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-base font-bold text-primary">
                 {metrics.fixedCount}
               </span>
             </div>
@@ -227,7 +227,7 @@ export const MistakesDashboardWidget: React.FC<
               </span>
             </div>
           ) : metrics.unresolvedCount === 0 && metrics.totalMistakes > 0 ? (
-            <div className="p-2.5 rounded-lg border bg-emerald-500/5 border-emerald-500/20 flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
+            <div className="p-2.5 rounded-lg border bg-primary/5 border-primary/20 flex items-center gap-2 text-xs text-primary">
               <CheckCircle2 className="h-4 w-4 shrink-0" />
               <span>All recorded mistakes have been resolved and mastered!</span>
             </div>

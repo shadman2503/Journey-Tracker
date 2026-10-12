@@ -132,61 +132,69 @@ export const StudyLogPage: React.FC = () => {
       {/* Overview Statistics Cards */}
       <div className='grid gap-4 grid-cols-2 lg:grid-cols-4'>
         {/* Total Sessions */}
-        <div className='rounded-xl border bg-card p-4 shadow-xs'>
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between'>
           <div className='flex items-center justify-between pb-1.5 text-muted-foreground'>
             <span className='text-xs font-medium'>Logged Sessions</span>
             <Calendar className='h-4 w-4 text-primary' />
           </div>
-          <div className='text-2xl font-bold text-foreground'>
-            {overallMetrics.sessionCount}
+          <div>
+            <div className='text-2xl font-bold text-foreground'>
+              {overallMetrics.sessionCount}
+            </div>
+            <p className='text-[11px] text-muted-foreground mt-1'>
+              Total recorded study entries
+            </p>
           </div>
-          <p className='text-[11px] text-muted-foreground mt-1'>
-            Total recorded study entries
-          </p>
         </div>
 
         {/* Total Study Time */}
-        <div className='rounded-xl border bg-card p-4 shadow-xs'>
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between'>
           <div className='flex items-center justify-between pb-1.5 text-muted-foreground'>
             <span className='text-xs font-medium'>Total Study Time</span>
             <Clock className='h-4 w-4 text-blue-500' />
           </div>
-          <div className='text-2xl font-bold text-foreground'>
-            {overallMetrics.totalHoursFormatted}
+          <div>
+            <div className='text-2xl font-bold text-foreground'>
+              {overallMetrics.totalHoursFormatted}
+            </div>
+            <p className='text-[11px] text-muted-foreground mt-1'>
+              {overallMetrics.totalMinutes} minutes invested
+            </p>
           </div>
-          <p className='text-[11px] text-muted-foreground mt-1'>
-            {overallMetrics.totalMinutes} minutes invested
-          </p>
         </div>
 
         {/* Questions Solved */}
-        <div className='rounded-xl border bg-card p-4 shadow-xs'>
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between'>
           <div className='flex items-center justify-between pb-1.5 text-muted-foreground'>
             <span className='text-xs font-medium'>Questions Solved</span>
-            <BookCheck className='h-4 w-4 text-emerald-500' />
+            <BookCheck className='h-4 w-4 text-primary' />
           </div>
-          <div className='text-2xl font-bold text-foreground'>
-            {overallMetrics.totalQuestionsSolved}
+          <div>
+            <div className='text-2xl font-bold text-foreground'>
+              {overallMetrics.totalQuestionsSolved}
+            </div>
+            <p className='text-[11px] text-muted-foreground mt-1'>
+              {overallMetrics.totalCorrectAnswers} correct answers
+            </p>
           </div>
-          <p className='text-[11px] text-muted-foreground mt-1'>
-            {overallMetrics.totalCorrectAnswers} correct answers
-          </p>
         </div>
 
         {/* Average Accuracy */}
-        <div className='rounded-xl border bg-card p-4 shadow-xs'>
+        <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between'>
           <div className='flex items-center justify-between pb-1.5 text-muted-foreground'>
             <span className='text-xs font-medium'>Practice Accuracy</span>
             <Award className='h-4 w-4 text-amber-500' />
           </div>
-          <div className='text-2xl font-bold text-foreground'>
-            {overallMetrics.totalQuestionsSolved > 0
-              ? `${overallMetrics.overallAccuracy}%`
-              : 'N/A'}
+          <div>
+            <div className='text-2xl font-bold text-foreground'>
+              {overallMetrics.totalQuestionsSolved > 0
+                ? `${overallMetrics.overallAccuracy}%`
+                : 'N/A'}
+            </div>
+            <p className='text-[11px] text-muted-foreground mt-1'>
+              Across all practice sets
+            </p>
           </div>
-          <p className='text-[11px] text-muted-foreground mt-1'>
-            Across all practice sets
-          </p>
         </div>
       </div>
 

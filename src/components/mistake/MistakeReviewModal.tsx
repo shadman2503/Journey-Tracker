@@ -135,7 +135,7 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
         {/* Empty Deck View */}
         {deck.length === 0 && (
           <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-            <div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <div className="p-4 rounded-2xl bg-primary/10 text-primary">
               <Sparkles className="h-10 w-10" />
             </div>
             <div className="space-y-1.5 max-w-md">
@@ -189,7 +189,7 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
             <div className="grid grid-cols-3 gap-3 w-full max-w-sm pt-2">
               <div className="p-3 rounded-xl border bg-muted/30 text-center">
                 <span className="text-xs text-muted-foreground font-semibold">Mastered</span>
-                <div className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                <div className="text-xl font-extrabold text-primary mt-0.5">
                   {results.mastered}
                 </div>
               </div>
@@ -306,8 +306,8 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
               ) : (
                 <div className="space-y-4 animate-in fade-in-0 duration-200">
                   {/* Correct Solution Section */}
-                  <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/15 space-y-1.5">
-                    <span className="font-bold text-xs text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/15 space-y-1.5">
+                    <span className="font-bold text-xs text-primary flex items-center gap-1.5">
                       <CheckCircle2 className="h-4 w-4" />
                       <span>Correct Concept & Solution:</span>
                     </span>
@@ -343,7 +343,7 @@ export const MistakeReviewModal: React.FC<MistakeReviewModalProps> = ({
                       <Button
                         size="sm"
                         onClick={() => handleAssessment('fixed')}
-                        className="text-xs h-9 bg-emerald-600 hover:bg-emerald-700 text-white flex-col py-1 shadow-xs"
+                        className="text-xs h-9 bg-primary text-primary-foreground hover:bg-primary/90 flex-col py-1 shadow-xs"
                       >
                         <span className="font-bold">Fixed & Mastered</span>
                         <span className="text-[10px] opacity-80 font-normal">Resolved! Mark Fixed</span>

@@ -253,7 +253,7 @@ export const DashboardPage: React.FC = () => {
               <span className='text-sm font-medium text-muted-foreground'>
                 Questions Solved
               </span>
-              <BookCheck className='h-4 w-4 text-emerald-500' />
+              <BookCheck className='h-4 w-4 text-primary' />
             </div>
             <div className='text-2xl font-bold tracking-tight'>
               {studyMetrics.totalQuestionsSolved}

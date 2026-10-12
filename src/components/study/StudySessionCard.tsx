@@ -37,8 +37,8 @@ const SUBJECT_STYLES: Record<
   },
   cse: {
     label: 'Computer Science',
-    badgeClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    borderClass: 'hover:border-emerald-500/40',
+    badgeClass: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
+    borderClass: 'hover:border-teal-500/40',
   },
 };
 
@@ -173,7 +173,7 @@ export const StudySessionCard: React.FC<StudySessionCardProps> = ({
                 className={cn(
                   'px-2 py-0.5 rounded-full text-[11px] font-bold border',
                   accuracy >= 80
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : accuracy >= 60
                     ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                     : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'

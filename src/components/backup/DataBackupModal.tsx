@@ -346,7 +346,7 @@ export const DataBackupModal: React.FC<DataBackupModalProps> = ({
               {lastExportedFilename && (
                 <div
                   data-testid="export-success-banner"
-                  className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2"
+                  className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs flex items-center gap-2"
                 >
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
                   <span>
@@ -540,7 +540,7 @@ export const DataBackupModal: React.FC<DataBackupModalProps> = ({
               {importResult && importResult.success && (
                 <div
                   data-testid="import-success-banner"
-                  className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs space-y-2"
+                  className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs space-y-2"
                 >
                   <div className="font-bold flex items-center gap-1.5 text-sm">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
@@ -573,7 +573,7 @@ export const DataBackupModal: React.FC<DataBackupModalProps> = ({
               {resetSuccess && (
                 <div
                   data-testid="reset-success-banner"
-                  className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2"
+                  className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs flex items-center gap-2"
                 >
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
                   <span>Local preparation database successfully cleared!</span>

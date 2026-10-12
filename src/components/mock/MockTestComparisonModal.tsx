@@ -105,7 +105,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
                 className={cn(
                   'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.scoreDelta > 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : comparison.scoreDelta < 0
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : 'bg-muted text-muted-foreground border-border',
@@ -128,7 +128,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
                 className={cn(
                   'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.accuracyDelta > 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : comparison.accuracyDelta < 0
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : 'bg-muted text-muted-foreground border-border',
@@ -151,7 +151,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
                 className={cn(
                   'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   pctDelta > 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : pctDelta < 0
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : 'bg-muted text-muted-foreground border-border',
@@ -165,7 +165,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
           {/* Correct Answers */}
           <div className="grid grid-cols-3 p-2.5 sm:p-3 items-center bg-muted/20">
             <div className="font-semibold text-foreground">Correct Answers</div>
-            <div className="text-center font-bold text-emerald-600 dark:text-emerald-400">
+            <div className="text-center font-bold text-primary">
               +{testA.correctAnswers}
             </div>
             <div className="flex items-center justify-end gap-1.5 sm:gap-2">
@@ -174,7 +174,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
                 className={cn(
                   'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.correctDelta > 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : comparison.correctDelta < 0
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : 'bg-muted text-muted-foreground border-border',
@@ -197,7 +197,7 @@ export const MockTestComparisonModal: React.FC<MockTestComparisonModalProps> = (
                 className={cn(
                   'text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-md border inline-flex items-center gap-0.5',
                   comparison.wrongDelta < 0
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' // fewer mistakes is positive
+                    ? 'bg-primary/10 text-primary border-primary/20' // fewer mistakes is positive
                     : comparison.wrongDelta > 0
                       ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                       : 'bg-muted text-muted-foreground border-border',

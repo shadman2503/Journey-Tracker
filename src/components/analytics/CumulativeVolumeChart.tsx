@@ -41,7 +41,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
       </div>
       <div className="text-muted-foreground flex justify-between">
         <span>Cumulative Questions:</span>
-        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+        <span className="font-bold text-blue-500 dark:text-blue-400">
           {item.cumulativeQuestions}
         </span>
       </div>
@@ -146,12 +146,12 @@ export const CumulativeVolumeChart: React.FC<CumulativeVolumeChartProps> = ({
           <AreaChart data={data} margin={{ top: 10, right: 15, left: -15, bottom: 0 }}>
             <defs>
               <linearGradient id="hoursGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="questionsGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
               </linearGradient>
             </defs>
 
@@ -200,7 +200,7 @@ export const CumulativeVolumeChart: React.FC<CumulativeVolumeChartProps> = ({
                 type="monotone"
                 dataKey="cumulativeHours"
                 name="Cumulative Hours"
-                stroke="var(--primary)"
+                stroke="hsl(var(--primary))"
                 strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#hoursGrad)"
@@ -213,7 +213,7 @@ export const CumulativeVolumeChart: React.FC<CumulativeVolumeChartProps> = ({
                 type="monotone"
                 dataKey="cumulativeQuestions"
                 name="Questions Solved"
-                stroke="#10b981"
+                stroke="#3b82f6"
                 strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#questionsGrad)"

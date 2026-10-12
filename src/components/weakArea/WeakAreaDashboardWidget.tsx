@@ -50,7 +50,7 @@ export const WeakAreaDashboardWidget: React.FC<WeakAreaDashboardWidgetProps> = (
                   </span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-xs font-semibold text-primary">
                   <CheckCircle2 className="h-3 w-3" />
                   <span>All Clear</span>
                 </span>
@@ -78,7 +78,7 @@ export const WeakAreaDashboardWidget: React.FC<WeakAreaDashboardWidgetProps> = (
       {/* Widget Content */}
       {weakAreas.length === 0 ? (
         <div className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-xs">
-          <div className="p-3 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+          <div className="p-3 rounded-full bg-primary/10 text-primary shrink-0">
             <CheckCircle2 className="h-6 w-6" />
           </div>
           <div className="space-y-0.5">

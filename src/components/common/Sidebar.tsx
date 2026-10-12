@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Compass,
+  Trophy,
   BookOpen,
   Calendar,
   AlertCircle,
@@ -113,8 +114,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Brand Header */}
         <div className="flex items-center gap-3 px-5 h-16 border-b border-border/40 shrink-0">
-          <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
-            <Compass className="h-5 w-5" />
+          <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0 shadow-xs">
+            <Trophy className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-base tracking-tight text-foreground leading-tight">
@@ -170,7 +171,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Mobile Drawer Header */}
         <div className="flex items-center justify-between px-4 h-16 border-b border-border/40 shrink-0 bg-background/40">
           <div className="flex items-center gap-2.5 font-bold text-base tracking-tight text-primary">
-            <Compass className="h-5 w-5" />
+            <Trophy className="h-5 w-5" />
             <span>DUET 2027</span>
           </div>
 

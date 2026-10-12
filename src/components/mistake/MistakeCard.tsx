@@ -153,8 +153,8 @@ export const MistakeCard: React.FC<MistakeCardProps> = ({
           </div>
 
           {/* Correct solution / concept */}
-          <div className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10 space-y-1">
-            <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+          <div className="p-3 rounded-xl bg-primary/5 border border-primary/15 space-y-1">
+            <span className="font-bold text-primary flex items-center gap-1">
               <CheckCircle2 className="h-3.5 w-3.5" />
               <span>Correct Concept & Solution:</span>
             </span>

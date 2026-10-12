@@ -17,11 +17,11 @@ export const OverallProgressCard: React.FC<OverallProgressCardProps> = ({
   summary,
 }) => {
   return (
-    <div className='rounded-xl border bg-card p-6 shadow-sm space-y-5'>
+    <div className='rounded-xl border bg-card p-4 sm:p-5 shadow-sm space-y-4'>
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2'>
         <div className='space-y-1'>
           <div className='flex items-center gap-2'>
-            <span className='p-1.5 rounded-lg bg-primary/10 text-primary'>
+            <span className='p-1.5 rounded-lg bg-primary/10 text-primary shadow-xs'>
               <TrendingUp className='h-4 w-4' />
             </span>
             <h3 className='text-base font-semibold text-foreground'>
@@ -34,7 +34,7 @@ export const OverallProgressCard: React.FC<OverallProgressCardProps> = ({
           </p>
         </div>
         <div className='flex items-baseline gap-1.5'>
-          <span className='text-3xl font-extrabold tracking-tight text-foreground'>
+          <span className='text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground'>
             {summary.percentage}%
           </span>
           <span className='text-xs font-medium text-muted-foreground'>
@@ -45,7 +45,7 @@ export const OverallProgressCard: React.FC<OverallProgressCardProps> = ({
 
       {/* Progress Bar */}
       <div className='space-y-1.5'>
-        <Progress value={summary.percentage} className='h-3' />
+        <Progress value={summary.percentage} className='h-2' />
         <div className='flex justify-between text-[11px] text-muted-foreground'>
           <span>0%</span>
           <span>Target: 100% Mastery</span>
@@ -53,9 +53,9 @@ export const OverallProgressCard: React.FC<OverallProgressCardProps> = ({
       </div>
 
       {/* Status Breakdown Grid */}
-      <div className='grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t'>
-        <div className='flex items-center gap-2.5 p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10'>
-          <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
+      <div className='grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 border-t border-border/50'>
+        <div className='flex items-center gap-2.5 p-2 rounded-lg bg-primary/5 border border-primary/15'>
+          <CheckCircle2 className='h-4 w-4 text-primary flex-shrink-0' />
           <div className='min-w-0'>
             <div className='text-xs text-muted-foreground'>Mastered</div>
             <div className='text-sm font-semibold text-foreground'>

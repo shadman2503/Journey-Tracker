@@ -30,7 +30,7 @@ export const MistakeResolutionOverview: React.FC<
           className,
         )}
       >
-        <CheckCircle2 className='h-8 w-8 text-emerald-500/60' />
+        <CheckCircle2 className='h-8 w-8 text-primary/60' />
         <h4 className='text-sm font-semibold text-foreground'>
           No Mistakes Logged
         </h4>
@@ -78,7 +78,7 @@ export const MistakeResolutionOverview: React.FC<
       <div className='space-y-1.5'>
         <div className='h-2.5 w-full bg-muted rounded-full overflow-hidden flex'>
           <div
-            className='bg-emerald-500 h-full transition-all duration-500'
+            className='bg-primary h-full transition-all duration-500'
             style={{
               width: `${(data.resolvedCount / data.totalMistakes) * 100}%`,
             }}
@@ -101,7 +101,7 @@ export const MistakeResolutionOverview: React.FC<
         </div>
         <div className='flex items-center justify-between text-[11px] text-muted-foreground pt-1'>
           <span className='flex items-center gap-1'>
-            <span className='h-2 w-2 rounded-full bg-emerald-500' />
+            <span className='h-2 w-2 rounded-full bg-primary' />
             Fixed ({data.resolvedCount})
           </span>
           <span className='flex items-center gap-1'>

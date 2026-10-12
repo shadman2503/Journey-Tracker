@@ -43,9 +43,8 @@ const URGENCY_STYLES: Record<
   },
   healthy: {
     label: 'Solid',
-    badge:
-      'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    bar: 'bg-emerald-500',
+    badge: 'bg-primary/10 text-primary border-primary/20',
+    bar: 'bg-primary',
     icon: Info,
   },
 };
@@ -59,7 +58,7 @@ export const WeakAreaCard: React.FC<WeakAreaCardProps> = ({
   const UrgencyIcon = urgencyConfig.icon;
 
   return (
-    <div className='group flex flex-col justify-between rounded-xl border bg-card p-5 shadow-xs transition-all hover:border-primary/40 hover:shadow-md space-y-4'>
+    <div className='group flex flex-col justify-between rounded-xl border bg-card p-4 sm:p-4.5 shadow-xs transition-all hover:border-primary/40 hover:shadow-md space-y-3'>
       <div className='space-y-3'>
         {/* Top Meta Badges */}
         <div className='flex items-center justify-between gap-2'>

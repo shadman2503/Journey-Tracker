@@ -32,10 +32,10 @@ const CATEGORY_COLORS: Record<
   }
 > = {
   syllabus: {
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-500/30',
-    text: 'text-emerald-500 dark:text-emerald-400',
-    nodeBg: 'bg-emerald-500',
+    bg: 'bg-primary/10',
+    border: 'border-primary/30',
+    text: 'text-primary',
+    nodeBg: 'bg-primary',
     label: 'Syllabus',
     icon: BookOpen,
   },

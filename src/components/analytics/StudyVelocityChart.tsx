@@ -43,7 +43,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
       </div>
       <div className="text-muted-foreground flex justify-between">
         <span>Weekly Accuracy:</span>
-        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+        <span className="font-bold text-primary">
           {item.accuracy}%
         </span>
       </div>
@@ -140,7 +140,7 @@ export const StudyVelocityChart: React.FC<StudyVelocityChartProps> = ({
               yAxisId="left"
               dataKey="questionsSolved"
               name="Questions Solved"
-              fill="var(--primary)"
+              fill="hsl(var(--primary))"
               radius={[4, 4, 0, 0]}
               maxBarSize={40}
             />

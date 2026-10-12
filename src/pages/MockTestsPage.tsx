@@ -141,59 +141,67 @@ export const MockTestsPage: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
         {/* Total Tests */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Tests Taken
             </span>
             <FileCheck className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl font-black tracking-tight">{metrics.totalTests}</div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {metrics.totalQuestionsAttempted} questions attempted
-          </p>
+          <div>
+            <div className="text-2xl font-black tracking-tight">{metrics.totalTests}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {metrics.totalQuestionsAttempted} questions attempted
+            </p>
+          </div>
         </div>
 
         {/* Average Score */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Average Score
             </span>
-            <Award className="h-4 w-4 text-emerald-500" />
+            <Award className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl font-black tracking-tight">{metrics.averageScore.toFixed(2)}</div>
-          <p className="text-xs text-muted-foreground mt-1">
-            DUET negative weighted
-          </p>
+          <div>
+            <div className="text-2xl font-black tracking-tight">{metrics.averageScore.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              DUET negative weighted
+            </p>
+          </div>
         </div>
 
         {/* Average Accuracy */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Average Accuracy
             </span>
             <BookCheck className="h-4 w-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-black tracking-tight">{metrics.averageAccuracy}%</div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Across attempted questions
-          </p>
+          <div>
+            <div className="text-2xl font-black tracking-tight">{metrics.averageAccuracy}%</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Across attempted questions
+            </p>
+          </div>
         </div>
 
         {/* Highest Score */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Highest Score
             </span>
             <Award className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="text-2xl font-black tracking-tight">{metrics.highestScore.toFixed(2)}</div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Personal best score
-          </p>
+          <div>
+            <div className="text-2xl font-black tracking-tight">{metrics.highestScore.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Personal best score
+            </p>
+          </div>
         </div>
       </div>
 

@@ -26,8 +26,8 @@ const CATEGORY_META: Record<
 > = {
   syllabus: {
     label: 'Syllabus',
-    bg: 'bg-emerald-500/10 border-emerald-500/20',
-    text: 'text-emerald-500 dark:text-emerald-400',
+    bg: 'bg-primary/10 border-primary/20',
+    text: 'text-primary',
     icon: BookOpen,
   },
   streak: {

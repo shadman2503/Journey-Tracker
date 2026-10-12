@@ -49,8 +49,8 @@ const SUBJECT_STYLES: Record<
   },
   cse: {
     label: 'Computer Science',
-    badgeClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    borderClass: 'hover:border-emerald-500/40',
+    badgeClass: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
+    borderClass: 'hover:border-teal-500/40',
   },
 };
 
@@ -201,7 +201,7 @@ export const MockTestCard: React.FC<MockTestCardProps> = ({
               className={cn(
                 'flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md border',
                 previousDelta.scoreDelta > 0
-                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                  ? 'bg-primary/10 text-primary border-primary/20'
                   : previousDelta.scoreDelta < 0
                     ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                     : 'bg-muted text-muted-foreground border-border',
@@ -244,9 +244,9 @@ export const MockTestCard: React.FC<MockTestCardProps> = ({
         </div>
 
         {/* Correct Answers */}
-        <div className="p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-center">
-          <span className="text-[11px] text-emerald-700 dark:text-emerald-300 block font-medium">Correct</span>
-          <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">
+        <div className="p-2.5 rounded-lg bg-primary/5 border border-primary/20 text-center">
+          <span className="text-[11px] text-primary block font-medium">Correct</span>
+          <span className="text-sm font-bold text-primary mt-0.5 block">
             +{test.correctAnswers}
           </span>
         </div>

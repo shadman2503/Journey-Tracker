@@ -62,10 +62,10 @@ const SUBJECT_CONFIG: Record<
   },
   cse: {
     icon: Laptop,
-    color: 'text-emerald-600 dark:text-emerald-400',
-    bgColor: 'bg-emerald-500/10',
-    borderColor: 'hover:border-emerald-500/40',
-    indicatorColor: 'bg-emerald-600 dark:bg-emerald-500',
+    color: 'text-teal-600 dark:text-teal-400',
+    bgColor: 'bg-teal-500/10',
+    borderColor: 'hover:border-teal-500/40',
+    indicatorColor: 'bg-teal-600 dark:bg-teal-500',
     nameBn: 'কম্পিউটার সায়েন্স',
   },
 };
@@ -150,7 +150,7 @@ export const SubjectProgressGrid: React.FC<SubjectProgressGridProps> = ({
 
               <div className='pt-2 border-t flex items-center justify-between text-[11px] text-muted-foreground'>
                 <span className='inline-flex items-center gap-1'>
-                  <CheckCircle2 className='h-3 w-3 text-emerald-500' />
+                  <CheckCircle2 className='h-3 w-3 text-primary' />
                   <span>
                     {summary.completedTopics}/{summary.totalTopics} mastered
                   </span>

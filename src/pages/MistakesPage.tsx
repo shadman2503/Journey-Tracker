@@ -164,81 +164,91 @@ export const MistakesPage: React.FC = () => {
       {/* Summary KPI Cards */}
       <div className="grid gap-3.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
         {/* Total Mistakes */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Total Logged
             </span>
             <AlertCircle className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl font-black tracking-tight">{metrics.totalMistakes}</div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Across all subjects
-          </p>
+          <div>
+            <div className="text-2xl font-black tracking-tight">{metrics.totalMistakes}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Across all subjects
+            </p>
+          </div>
         </div>
 
         {/* Unresolved Mistakes */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Unresolved
             </span>
             <Clock className="h-4 w-4 text-rose-500" />
           </div>
-          <div className="text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
-            {metrics.unresolvedCount}
+          <div>
+            <div className="text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
+              {metrics.unresolvedCount}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Need concept analysis
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Need concept analysis
-          </p>
         </div>
 
         {/* In Review */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               In Review
             </span>
             <RotateCcw className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="text-2xl font-black tracking-tight text-amber-600 dark:text-amber-400">
-            {metrics.reviewingCount}
+          <div>
+            <div className="text-2xl font-black tracking-tight text-amber-600 dark:text-amber-400">
+              {metrics.reviewingCount}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Active spaced revision
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Active spaced revision
-          </p>
         </div>
 
         {/* Recurring Hotspots */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Recurring Hotspots
             </span>
             <Flame className="h-4 w-4 text-rose-500" />
           </div>
-          <div className="text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
-            {hotspots.length}
+          <div>
+            <div className="text-2xl font-black tracking-tight text-rose-600 dark:text-rose-400">
+              {hotspots.length}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Topics with ≥ 2 slips
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Topics with ≥ 2 slips
-          </p>
         </div>
 
         {/* Resolution Rate */}
-        <div className="rounded-xl border bg-card p-5 shadow-xs col-span-2 sm:col-span-1">
+        <div className="rounded-xl border bg-card p-4 sm:p-5 shadow-xs col-span-2 sm:col-span-1 flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Fixed & Mastered
             </span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <CheckCircle2 className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
-            {metrics.fixedCount}
+          <div>
+            <div className="text-2xl font-black tracking-tight text-primary">
+              {metrics.fixedCount}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {metrics.resolutionRate}% resolution rate
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {metrics.resolutionRate}% resolution rate
-          </p>
         </div>
       </div>
 

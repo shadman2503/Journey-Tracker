@@ -371,7 +371,7 @@ export const AnalyticsPage: React.FC = () => {
                       {performanceAnalytics.trajectory.direction === 'improving' && (
                         <span
                           data-testid="trajectory-improving"
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20"
                         >
                           <TrendingUp className="h-3 w-3" />
                           +{performanceAnalytics.trajectory.deltaScore} Upward Trend
@@ -419,7 +419,7 @@ export const AnalyticsPage: React.FC = () => {
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Overall Accuracy
                     </span>
-                    <Target className="h-4 w-4 text-emerald-500" />
+                    <Target className="h-4 w-4 text-primary" />
                   </div>
                   <div className="space-y-1">
                     <div className="text-2xl font-black tracking-tight">

@@ -60,13 +60,13 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
 
     switch (level) {
       case 1:
-        return 'bg-emerald-200 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-800';
+        return 'bg-primary/25 border-primary/35';
       case 2:
-        return 'bg-emerald-400 dark:bg-emerald-700 border-emerald-500 dark:border-emerald-600';
+        return 'bg-primary/50 border-primary/60';
       case 3:
-        return 'bg-emerald-500 dark:bg-emerald-500 border-emerald-600 dark:border-emerald-400';
+        return 'bg-primary/75 border-primary/85';
       case 4:
-        return 'bg-emerald-700 dark:bg-emerald-300 border-emerald-800 dark:border-emerald-200';
+        return 'bg-primary border-primary';
       case 0:
       default:
         return 'bg-muted/40 border-border/40 hover:border-border';
@@ -289,7 +289,7 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
 
             {hoveredCell.cell.activity && hoveredCell.cell.activity.sessionCount > 0 ? (
               <div className="space-y-1 text-[11px]">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                <div className="flex items-center gap-1.5 text-primary font-medium">
                   <Clock className="h-3 w-3" />
                   <span>
                     {hoveredCell.cell.activity.totalMinutes}m studied (
@@ -344,19 +344,19 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({
               title="Level 0: No activity"
             />
             <div
-              className="h-3 w-3 rounded-[2px] bg-emerald-200 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800"
+              className="h-3 w-3 rounded-[2px] bg-primary/25 border border-primary/35"
               title={metric === 'duration' ? 'Level 1: 1-30 mins' : 'Level 1: 1-15 questions'}
             />
             <div
-              className="h-3 w-3 rounded-[2px] bg-emerald-400 dark:bg-emerald-700 border border-emerald-500 dark:border-emerald-600"
+              className="h-3 w-3 rounded-[2px] bg-primary/50 border border-primary/60"
               title={metric === 'duration' ? 'Level 2: 31-60 mins' : 'Level 2: 16-30 questions'}
             />
             <div
-              className="h-3 w-3 rounded-[2px] bg-emerald-500 dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400"
+              className="h-3 w-3 rounded-[2px] bg-primary/75 border border-primary/85"
               title={metric === 'duration' ? 'Level 3: 61-120 mins' : 'Level 3: 31-60 questions'}
             />
             <div
-              className="h-3 w-3 rounded-[2px] bg-emerald-700 dark:bg-emerald-300 border border-emerald-800 dark:border-emerald-200"
+              className="h-3 w-3 rounded-[2px] bg-primary border border-primary"
               title={metric === 'duration' ? 'Level 4: >120 mins' : 'Level 4: >60 questions'}
             />
           </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
-  Compass,
+  Trophy,
   Database,
   Moon,
   Sun,
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Mobile Brand Title */}
             <div className="flex items-center gap-2 md:hidden font-bold text-base tracking-tight text-primary">
-              <Compass className="h-5 w-5" />
+              <Trophy className="h-5 w-5" />
               <span>DUET 2027</span>
             </div>
 

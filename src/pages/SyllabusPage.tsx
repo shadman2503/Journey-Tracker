@@ -255,7 +255,7 @@ export const SyllabusPage: React.FC = () => {
 
       {/* Subject Description & Mastery Breakdown Card */}
       {currentSubject && !searchQuery && (
-        <div className='p-4 rounded-xl border bg-card/60 space-y-3.5'>
+        <div className='p-4 sm:p-5 rounded-xl border bg-card/60 space-y-3.5'>
           <div className='flex flex-col md:flex-row md:items-center justify-between gap-3'>
             <div className='space-y-1'>
               <h2 className='font-semibold text-foreground text-base'>
@@ -285,8 +285,8 @@ export const SyllabusPage: React.FC = () => {
             <Progress value={subjectPercentage} className='h-2' />
             <div className='flex flex-wrap items-center justify-between gap-2 text-xs pt-0.5'>
               <div className='flex flex-wrap items-center gap-2'>
-                <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20'>
-                  <span className='h-1.5 w-1.5 rounded-full bg-emerald-500' />
+                <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium border border-primary/20'>
+                  <span className='h-1.5 w-1.5 rounded-full bg-primary' />
                   {statusBreakdown.strong} Strong
                 </span>
                 <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium border border-amber-500/20'>

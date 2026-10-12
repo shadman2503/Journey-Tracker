@@ -59,7 +59,7 @@ export const RecurringMistakesHotspots: React.FC<RecurringMistakesHotspotsProps>
       {/* Empty State */}
       {hotspots.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 text-center border rounded-2xl bg-card/50 border-dashed space-y-3">
-          <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <div className="p-3 rounded-2xl bg-primary/10 text-primary">
             <CheckCircle2 className="h-6 w-6" />
           </div>
           <div className="space-y-1 max-w-sm">
@@ -123,7 +123,7 @@ export const RecurringMistakesHotspots: React.FC<RecurringMistakesHotspotsProps>
                     </div>
                     <div>
                       <div className="text-xs text-muted-foreground">Mastered</div>
-                      <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                      <div className="text-sm font-bold text-primary">
                         {hotspot.fixedCount}
                       </div>
                     </div>

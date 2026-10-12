@@ -129,7 +129,7 @@ export const JourneyTimeline: React.FC<JourneyTimelineProps> = ({
         {/* 3 Metric Pills */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
           <div className="p-3 rounded-xl bg-background/80 border flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
               <Trophy className="h-4 w-4" />
             </div>
             <div>

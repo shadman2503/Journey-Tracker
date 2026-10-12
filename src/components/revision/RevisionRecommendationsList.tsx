@@ -276,7 +276,7 @@ export const RevisionRecommendationsList: React.FC<
       {/* Recommendations Cards Grid or Empty State */}
       {recommendations.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center border rounded-2xl bg-card border-dashed space-y-3">
-          <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
             <CheckCircle2 className="h-8 w-8" />
           </div>
           <div className="space-y-1 max-w-sm">
