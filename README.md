@@ -186,18 +186,6 @@ Current test coverage includes **74 test suites and 536 tests passing** covering
 
 ---
 
-## Deployment
-
-The application is pre-configured for seamless deployment to **Vercel** (or any static hosting provider such as Netlify, Cloudflare Pages, or GitHub Pages):
-
-1. Connect your repository on **[vercel.com](https://vercel.com)**.
-2. Select the **Vite** framework preset:
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-3. Single-Page Application (SPA) routing is handled automatically via `vercel.json` rewrites.
-
----
-
 ## Developer
 
 **Shadman Shoumik**  
