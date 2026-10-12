@@ -126,4 +126,20 @@ describe('Sidebar Component', () => {
 
     expect(onClose).toHaveBeenCalled();
   });
+
+  it('renders developer acknowledgment credit linking to GitHub', () => {
+    renderSidebar();
+
+    const desktopSidebar = screen.getByTestId('desktop-sidebar');
+    expect(desktopSidebar).toHaveTextContent('Developer');
+    expect(desktopSidebar).toHaveTextContent('Shadman Shoumik');
+
+    const devLink = desktopSidebar.querySelector('a[href="https://github.com/shadman2503"]');
+    expect(devLink).toBeInTheDocument();
+    expect(devLink).toHaveAttribute('target', '_blank');
+
+    const devImg = devLink?.querySelector('img');
+    expect(devImg).toHaveAttribute('src', 'https://github.com/shadman2503.png');
+    expect(devImg).toHaveAttribute('alt', 'Shadman Shoumik');
+  });
 });
